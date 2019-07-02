@@ -10,7 +10,7 @@ Description: Implements Wofost Crop Growth Algorithm for potential production
              dynamics. Water-limited production is implemented via hydrotools
              package. Automatic sourcing of high-res weather data via
              microclima package. Crop suitability functions provided too.
-License: What license is it under?
+License: EUPL (>= 1.1)
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.1.1
