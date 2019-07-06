@@ -4,7 +4,7 @@
 \alias{test.LeafDynamics}
 \title{Leaf Dynamics routine testing}
 \usage{
-test.LeafDynamics(yamlFile, plt = TRUE, ...)
+test.LeafDynamics(yamlFile, plt = TRUE, rtn = FALSE, ...)
 }
 \arguments{
 \item{yamlFile}{Path to yaml test file}

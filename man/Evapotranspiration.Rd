@@ -4,8 +4,8 @@
 \alias{Evapotranspiration}
 \title{Evapotranspiration}
 \usage{
-Evapotranspiration(dvs, w, lai, sm, t, DEPNR, SMFCF, IAIRDU, IOX, CFET,
-  SMW, CRAIRC, KDIFTB)
+Evapotranspiration(dvs, w, lai, sm, t, dsos, SM0, DEPNR, SMFCF, IAIRDU,
+  IOX, CFET, SMW, CRAIRC, KDIFTB)
 }
 \arguments{
 \item{dvs}{Numeric. Development stage}
@@ -17,6 +17,9 @@ Evapotranspiration(dvs, w, lai, sm, t, DEPNR, SMFCF, IAIRDU, IOX, CFET,
 \item{sm}{Numeric. Volumetric soil moisture content}
 
 \item{t}{Integar. Time step of the model}
+
+\item{dsos}{Days since oxygen stress, computed in classic waterbalance,
+accumulates the number of consecutive days of oxygen stress}
 
 \item{DEPNR}{Crop group number}
 

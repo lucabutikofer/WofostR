@@ -4,15 +4,15 @@
 \alias{Totas_Assim}
 \title{Totas & Assim}
 \usage{
-Totas_Assim(tday, d, sd, lat, sgd, sinbm, dp, s = 0.2, lai, dvs, t, tlow,
-  KDIFTB, AMAXTB, TMPFTB, TMNFTB, EFFTB)
+Totas_Assim(tday, d, sold, lat, sgd, sinbm, dp, s = 0.2, lai, dvs, t,
+  tlow, KDIFTB, AMAXTB, TMPFTB, TMNFTB, EFFTB)
 }
 \arguments{
 \item{tday}{Average daytime temperature}
 
 \item{d}{Astronomical day length}
 
-\item{sd}{Solar declination}
+\item{sold}{Solar declination}
 
 \item{lat}{Latitude}
 
@@ -41,8 +41,6 @@ vs. 7 days running minumum temperature)}
 
 \item{EFFTB}{Afgen table (light use efficiency vs. daily mean temp),
 crop-specific [kg ha-1 hr-1 j-1 m2 s]}
-
-\item{kdf}{Extinction coefficient for the diffuse radiation flux}
 }
 \description{
 Routines Total and Assim combined. Computes total daily gross CO2

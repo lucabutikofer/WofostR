@@ -98,14 +98,14 @@ limit<- function(min,max,x){
 
 sol_dec<- function(td){
 
-  #sd: solar declination [RADIANS]
+  #sold: solar declination [RADIANS]
   #td: number of the day since 1st of Jan
 
-  sd<- -asin(sind(23.45) * cos(2*pi*(td + 10)/365))
+  sold<- -asin(sind(23.45) * cos(2*pi*(td + 10)/365))
   # line above modified from supit 1994 to work in radians
   # like in FORTRAN Wofost 7.1.7
-  # original was: sd<- -(23.45) * cos(2*pi*(td + 10)/365)
-  return(sd)
+  # original was: sold<- -(23.45) * cos(2*pi*(td + 10)/365)
+  return(sold)
 }
 
 
@@ -123,13 +123,13 @@ sol_const<- function(td){
 
 # Day length (4.25)
 
-day_length<- function(lat, sd){
+day_length<- function(lat, sold){
 
   #lat: latitude
-  #sd: solar declination
+  #sold: solar declination
 
-  sinld<- sind(lat)*sin(sd)
-  cosld<- cosd(lat)*cos(sd)
+  sinld<- sind(lat)*sin(sold)
+  cosld<- cosd(lat)*cos(sold)
   aob<- sinld/cosld
 
   if (abs(aob) <= 1){ # for aob between -1 and 1
@@ -146,13 +146,13 @@ day_length<- function(lat, sd){
 
 # photosynthetic day length (for photosynthetic activity)
 
-day_length_corr<- function(lat, sd){
+day_length_corr<- function(lat, sold){
 
   #lat: latitude
-  #sd: solar declination
+  #sold: solar declination
 
-  sinld<- sind(lat)*sin(sd)
-  cosld<- cosd(lat)*cos(sd)
+  sinld<- sind(lat)*sin(sold)
+  cosld<- cosd(lat)*cos(sold)
   aobcorr<- (-sind(-4) + sinld)/cosld
 
   if (abs(aobcorr) <= 1){ # for aobcorr between -1 and 1
@@ -169,14 +169,14 @@ day_length_corr<- function(lat, sd){
 
 # Integral of solar height (4.26)
 
-int_sol_hgt<- function(lat, sd, d){
+int_sol_hgt<- function(lat, sold, d){
 
   #lat: latitude
-  #sd: solar declination
+  #sold: solar declination
   #d: day length
 
-  sinld<- sind(lat)*sin(sd)
-  cosld<- cosd(lat)*cos(sd)
+  sinld<- sind(lat)*sin(sold)
+  cosld<- cosd(lat)*cos(sold)
   aob<- sinld/cosld
 
   if (abs(aob) <= 1){ # for aob between -1 and 1
@@ -203,14 +203,14 @@ day_extrad<- function(scd, sinbdth){
 
 # Integral of effective solar height (4.28)
 
-int_effsol_hgt<- function(d, lat, sd){
+int_effsol_hgt<- function(d, lat, sold){
 
   #d: day length
   #lat: latitude
-  #sd: solar declination
+  #sold: solar declination
 
-  sinld<- sind(lat)*sin(sd)
-  cosld<- cosd(lat)*cos(sd)
+  sinld<- sind(lat)*sin(sold)
+  cosld<- cosd(lat)*cos(sold)
   aob<- sinld/cosld
 
   if (abs(aob)<=1){ # for aob between -1 and 1
@@ -395,15 +395,15 @@ hod_sel<- function(d){
 
 # Solar height (5.7)
 
-sol_hgt<- function(sd, th, lat){
+sol_hgt<- function(sold, th, lat){
 
   #sinb: solar height (sine of b, b being solar elevation)
-  #sd: solar declination
+  #sold: solar declination
   #th: hour of the day (5.6)
   #lat: latitude
 
-  sinld<- sind(lat)*sin(sd)
-  cosld<- cosd(lat)*cos(sd)
+  sinld<- sind(lat)*sin(sold)
+  cosld<- cosd(lat)*cos(sold)
 
   sinb<- sinld + (cosld*cos(2*pi*((th + 12) / 24)))
   sinb[sinb<0]<- 0  # changes negative values to 0
@@ -479,20 +479,6 @@ ref_coef<- function(s,sinb){
 
   p<- ((1 - sqrt(1-s)) / (1 + sqrt(1-s))) * (2 / (1 + 1.6*sinb))
   return(p)
-}
-
-
-# Canopy radiation extinction (5.13)
-
-rad_ext<- function(i, i0, p, lail){
-
-  #il: net PAR flux at depth l in the canopy [J / m^2 * s]
-  #i0: photosynthetically active radiation flux
-  #lail: cumulative leaf area index (from top downwards) at  depth l [ha /ha]
-  #p: reflection coefficient of the canopy (ref_coef())
-  #k: extinction coefficient for PAR flux
-
-  il<- i0 * (1 - p) * (exp(1) ^ (k * lail))
 }
 
 
@@ -945,34 +931,6 @@ carb_bal_check<- function(FL,FO,FS,FR,pgass,rmt,dmi,cvf){
 }
 
 
-# Net growth rate of stems (5.48a)
-
-net_gr_rate_st<- function(dwst, di, pwi){
-
-  #dwnst: net dry matter growth rate of organ i
-  #dwst: dry matter growth rate of stems
-  #pwi: past dry matter weight of stems
-  #di: death rate of stems
-
-  dwnst<- dwi[3] - (di[1] * pwi[3])
-  return(dwnst)
-}
-
-
-# Net growth rate of roots (5.48b)
-
-net_gr_rate_rt<- function(dwrt, di, pwi){
-
-  #dwni: net dry matter growth rate of organ i
-  #dwrt: dry matter growth rate of roots
-  #pwi: past dry matter weight of roots
-  #di: death rate of roots
-
-  dwnrt<- dwi[4] - (di[2] * pwi[4])
-  reurn(dwnrt)
-}
-
-
 # Dry matter weight of stems (5.49a)
 
 dry_weigth_st<- function(dwnst, pwi, tstep=1){
@@ -1012,21 +970,6 @@ dry_weigth_lv<- function(dwnlv, pwi, tstep=1){
 
   wlv<- pwi[1] + dwnlv * tstep
   return(wlv)
-}
-
-
-# LAI growth rate during unlimited growth (5.50)
-
-laigr_rate<- function(lai, RGRLAI, te){
-
-  #lexpt: growth rate of the leaf area index at time step t during exponential
-  #       growth stage
-  #lai: leaf area index at time step t
-  #RGRLAI: maximum relative increase of leaf area index
-  #te: daily effective temperature (5.2c)
-
-  lexpt<- lai * rl * te
-  return(lexpt)
 }
 
 

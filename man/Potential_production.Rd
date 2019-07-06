@@ -9,7 +9,7 @@ Potential_production(crop_start_type, AMAXTB, CFET, CRAIRC, CVL, CVO, CVR,
   FSTB, IAIRDU, IDSL, IOX, KDIFTB, LAIEM, PERDL, Q10, RDI, RDMCR, RDMSOL,
   RDRRTB, RDRSTB, RFSETB, RGRLAI, RML, RMO, RMR, RMS, RRI, SLATB, SMFCF,
   SMW, SPA, SPAN, SSATB, SSI, TBASE, TBASEM, TDWI, TEFFMX, TMNFTB, TMPFTB,
-  TSUM1, TSUM2, TSUMEM, VERNRTB, w, lat, waterlimited = F)
+  TSUM1, TSUM2, TSUMEM, VERNRTB, SM0, SM, w, lat, waterlimited = F)
 }
 \description{
 Computes potential production as per Wofost crop growth algorithm

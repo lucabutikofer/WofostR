@@ -8,12 +8,13 @@
 #'
 #' @param yamlFile Path to yaml test file
 #' @param plt Logical. If TRUE prints plots of results with plot.wofost.test
+#' @param rtn Logical. If TRUE returns a list (see below)
 #' @param ... Arguments passed to function plot.wofost.test
 #' @return List of 2 elements. 'output': the variables values produced by the
 #'         script 'control': the variables values saved in the yaml file.
+#' @export
 #'
-#'
-test.Astro<- function(yamlFile, plt = TRUE, ...){
+test.Astro<- function(yamlFile, plt = TRUE, rtn = FALSE, ...){
 
   yam<- read.wofost.yaml(yamlFile = yamlFile)
 
@@ -36,7 +37,7 @@ test.Astro<- function(yamlFile, plt = TRUE, ...){
     plot.wofost.test(control = contr, output = out, weather = w, ...)
   }
 
-  return(list('output'=out,'control'=contr))
+  if(isTRUE(rtn)) return(list('output'=out,'control'=contr))
 
 }
 
@@ -50,9 +51,9 @@ test.Astro<- function(yamlFile, plt = TRUE, ...){
 #' @param ... Arguments passed to function plot.wofost.test
 #' @return List of 2 elements. 'output': the variables values produced by the
 #'         script 'control': the variables values saved in the yaml file.
+#' @export
 #'
-#'
-test.Assimilation<- function(yamlFile, plt = TRUE, ...){
+test.Assimilation<- function(yamlFile, plt = TRUE, rtn = FALSE, ...){
 
   yam<- read.wofost.yaml(yamlFile = yamlFile)
 
@@ -109,12 +110,13 @@ test.Assimilation<- function(yamlFile, plt = TRUE, ...){
       for (v in 1:length(astro)){assign(names(astro)[v], astro[[v]])}
 
       # Assimilation
-      out[[t]]<- Totas_Assim(tday,d,sd,lat,sgd,sinbm,dp,s=0.2,lai,dvs,t,tlow,
-                          KDIFTB,
-                          AMAXTB,
-                          TMPFTB,
-                          TMNFTB,
-                          EFFTB)
+      out[[t]]<- Totas_Assim(tday,d,sold,lat,sgd,sinbm,dp,s=0.2,lai,
+                             dvs,t,tlow,
+                             KDIFTB,
+                             AMAXTB,
+                             TMPFTB,
+                             TMNFTB,
+                             EFFTB)
     } else { out[[t]] <- 0}
   }
   out <- data.frame(out)
@@ -128,7 +130,7 @@ test.Assimilation<- function(yamlFile, plt = TRUE, ...){
                      precision = yam[["precision"]], ...)
   }
 
-  return(list('output'=out,'control'=contr))
+  if(isTRUE(rtn)) return(list('output'=out,'control'=contr))
 
 }
 
@@ -143,7 +145,7 @@ test.Assimilation<- function(yamlFile, plt = TRUE, ...){
 #' @param ... Arguments passed to function plot.wofost.test
 #' @return List of 2 elements. 'output': the variables values produced by the
 #'         script 'control': the variables values saved in the yaml file.
-#'
+#' @export
 #'
 test.Respiration<- function(yamlFile, plt = TRUE, ...){
 
@@ -228,7 +230,7 @@ test.Respiration<- function(yamlFile, plt = TRUE, ...){
 #' @param ... Arguments passed to function plot.wofost.test
 #' @return List of 2 elements. 'output': the variables values produced by the
 #'         script 'control': the variables values saved in the yaml file.
-#'
+#' @export
 #'
 test.Partitioning<- function(yamlFile, plt = TRUE, ...){
 
@@ -294,7 +296,7 @@ test.Partitioning<- function(yamlFile, plt = TRUE, ...){
 #' @param ... Arguments passed to function plot.wofost.test
 #' @return List of 2 elements. 'output': the variables values produced by the
 #'         script 'control': the variables values saved in the yaml file.
-#'
+#' @export
 #'
 test.RootDynamics<- function(yamlFile, plt = TRUE, ...){
 
@@ -354,8 +356,9 @@ test.RootDynamics<- function(yamlFile, plt = TRUE, ...){
 #' @param ... Arguments passed to function plot.wofost.test
 #' @return List of 2 elements. 'output': the variables values produced by the
 #'         script 'control': the variables values saved in the yaml file.
+#' @export
 #'
-test.LeafDynamics<- function(yamlFile, plt = TRUE, ...){
+test.LeafDynamics<- function(yamlFile, plt = TRUE, rtn = FALSE,...){
 
   yam<- read.wofost.yaml(yamlFile = yamlFile)
 
@@ -398,7 +401,7 @@ test.LeafDynamics<- function(yamlFile, plt = TRUE, ...){
                      precision = yam[["precision"]], ...)
   }
 
-  return(list('output'=out,'control'=contr))
+  if(isTRUE(rtn)) return(list('output'=out,'control'=contr))
 
 }
 
@@ -412,6 +415,7 @@ test.LeafDynamics<- function(yamlFile, plt = TRUE, ...){
 #' @param ... Arguments passed to function plot.wofost.test
 #' @return List of 2 elements. 'output': the variables values produced by the
 #'         script 'control': the variables values saved in the yaml file.
+#' @export
 #'
 test.Evapotranspiration<- function(yamlFile, plt = TRUE, ...){
 
@@ -446,7 +450,8 @@ test.Evapotranspiration<- function(yamlFile, plt = TRUE, ...){
     dvs<- DVS[t]
 
     if(dvs >= 0){
-      out[[t]]<- Evapotranspiration(dvs,w,lai,sm,t,DEPNR,SMFCF,IAIRDU,IOX,
+      out[[t]]<- Evapotranspiration(dvs,w,lai,sm,t,dsos=0,SM0,DEPNR,SMFCF,
+                                    IAIRDU,IOX,
                                     CFET,SMW,CRAIRC)
     } else {out[[t]]<- list('evsmx'=0,'evwmx'=0,'tra'=0,'tramx'=0,'rftra'=0)}
   }
@@ -480,14 +485,15 @@ test.Evapotranspiration<- function(yamlFile, plt = TRUE, ...){
 #'
 #' @param yamlFile Path to yaml test file
 #' @param plt Logical. If TRUE prints plots of results with plot.wofost.test
+#' @param rtn Logical. If TRUE returns a list (see below)
 #' @param ... Arguments passed to function plot.wofost.test
 #' @return List of 2 elements. 'output': the variables values produced by the
 #'         script 'control': the variables values saved in the yaml file.
+#' @export
 #'
-test.PotentialProduction<- function(){
+test.PotentialProduction<- function(yamlFile, plt = TRUE, rtn = FALSE, ...){
 
-  yam<- read.wofost.yaml(
-    '../WofostCalibrationTools/1-s2/test_potentialproduction_wofost71_02.yaml')
+  yam<- read.wofost.yaml(yamlFile = yamlFile)
 
   # Weather
   w<- yam$weather
@@ -578,8 +584,10 @@ test.PotentialProduction<- function(){
                               TSUM2 = prmt$TSUM2,
                               TSUMEM = prmt$TSUMEM,
                               VERNRTB = prmt$VERNRTB,
+                              SM0 = prmt$SM0,
+                              SM = ext$SM,
                               w=w,lat=lat,
-                              waterlimited= T
+                              waterlimited= F
                               # fold variables ####
                               )
   for (i in 1:length(out)){out[[i]]<-as.numeric(out[[i]])}
@@ -597,6 +605,6 @@ test.PotentialProduction<- function(){
                      precision = yam[["precision"]], ...)
   }
 
-  return(list('output'=out,'control'=contr))
+  if(isTRUE(rtn)) return(list('output'=out,'control'=contr))
 
 }

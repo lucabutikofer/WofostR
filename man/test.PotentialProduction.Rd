@@ -4,12 +4,14 @@
 \alias{test.PotentialProduction}
 \title{Potential Production routine testing}
 \usage{
-test.PotentialProduction()
+test.PotentialProduction(yamlFile, plt = TRUE, rtn = FALSE, ...)
 }
 \arguments{
 \item{yamlFile}{Path to yaml test file}
 
 \item{plt}{Logical. If TRUE prints plots of results with plot.wofost.test}
+
+\item{rtn}{Logical. If TRUE returns a list (see below)}
 
 \item{...}{Arguments passed to function plot.wofost.test}
 }

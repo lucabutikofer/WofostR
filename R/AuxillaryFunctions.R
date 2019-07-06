@@ -3,7 +3,7 @@
 #' Renders afgen tables expressed as "vectors" into a "matrix" format.
 #'
 #' @param tab Afgen table expressed as vector.
-#'
+#' @export
 make.afgen<- function(tab){
 
   tab<- as.numeric(tab)
@@ -30,9 +30,8 @@ make.afgen<- function(tab){
 #'
 #' Reads .yaml test files published in De Wit et al. 2019,
 #' "25 years of the WOFOST cropping systems model", and returns R list.
-#'
 #' @param yamlFile Path to the .yaml file
-#'
+#' @export
 read.wofost.yaml<- function(yamlFile){
 
   # Read .yaml file with "yaml" package

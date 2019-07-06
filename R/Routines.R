@@ -8,6 +8,7 @@
 #' @param w Dataframe. Daily weather table
 #' @param t Integer. Time steps (days) passed from emergence (dvs==0)
 #' @param lat Numeric. Latitude
+#' @export
 #'
 Astro<- function(w, t, lat){
 
@@ -20,22 +21,22 @@ Astro<- function(w, t, lat){
   sgd<- w[t,'IRRAD']
 
   # solar declination
-  sd<- sol_dec(td)
+  sold<- sol_dec(td)
 
   # solar constant at the top of the atmosphere
   scd<- sol_const(td)
 
   # day length
-  d<- day_length(lat, sd)
+  d<- day_length(lat, sold)
 
   # day length for photosynthtic activity
-  dlp<- day_length_corr(lat, sd)
+  dlp<- day_length_corr(lat, sold)
 
   # integral of solar height
-  sinbdth<- int_sol_hgt(lat, sd, d)
+  sinbdth<- int_sol_hgt(lat, sold, d)
 
   # Integral of effective solar height
-  sinbm<- int_effsol_hgt(d, lat, sd)
+  sinbm<- int_effsol_hgt(d, lat, sold)
 
   # daily extra-terrestrial radiation
   sod<- day_extrad(scd, sinbdth)
@@ -53,13 +54,13 @@ Astro<- function(w, t, lat){
 
   return(list('sod'=sod,
            'tatm'=tatm,
-           'cosld'=cosd(lat)*cos(sd),
+           'cosld'=cosd(lat)*cos(sold),
            'd'=d,
            'dlp'=dlp,
            'dp'=dp,
            'sinbm'=sinbm,
-           'sinld'=sind(lat)*sin(sd),
-           'sd'=sd,
+           'sinld'=sind(lat)*sin(sold),
+           'sold'=sold,
            'sgd'=sgd))
 
 }
@@ -71,14 +72,13 @@ Astro<- function(w, t, lat){
 #'
 #' @param tday Average daytime temperature
 #' @param d Astronomical day length
-#' @param sd Solar declination
+#' @param sold Solar declination
 #' @param lat Latitude
 #' @param sgd Daily global radiation
 #' @param sinbm Corrected integral of solar height over the day (4.28)
 #' @param dp Diffuse radiation perpendicular to the direction light (4.31)
 #' @param s Scattering coefficient fraction (transmission and reflection) (=0.2?)
 #' @param lai Leaf area index of whole canopy
-#' @param kdf Extinction coefficient for the diffuse radiation flux
 #' @param dvs Development stage
 #' @param t Day in the loop
 #' @param AMAXTB Afgen table (inst. gross assimilation rate at light saturation
@@ -89,8 +89,9 @@ Astro<- function(w, t, lat){
 #'               vs. 7 days running minumum temperature)
 #' @param EFFTB Afgen table (light use efficiency vs. daily mean temp),
 #'              crop-specific [kg ha-1 hr-1 j-1 m2 s]
+#' @export
 #'
-Totas_Assim<- function(tday,d,sd,lat,sgd,sinbm,dp,s=0.2,lai,dvs,t,tlow,
+Totas_Assim<- function(tday,d,sold,lat,sgd,sinbm,dp,s=0.2,lai,dvs,t,tlow,
                        KDIFTB,
                        AMAXTB,
                        TMPFTB,
@@ -126,7 +127,7 @@ Totas_Assim<- function(tday,d,sd,lat,sgd,sinbm,dp,s=0.2,lai,dvs,t,tlow,
     th<- hod_sel(d)
 
     # Solar hight
-    sinb<- sol_hgt(sd, th, lat)
+    sinb<- sol_hgt(sold, th, lat)
     b<- asind(sinb)
 
     # PAR flux (Photosynthetically Active Radiation)
@@ -254,8 +255,11 @@ Totas_Assim<- function(tday,d,sd,lat,sgd,sinbm,dp,s=0.2,lai,dvs,t,tlow,
 #' @param CRAIRC Critical air content for root aeration
 #' @param KDIFTB Extinction coefficient for diffuse visible radiation as
 #'               function of DVS
+#' @param dsos Days since oxygen stress, computed in classic waterbalance,
+#'             accumulates the number of consecutive days of oxygen stress
+#' @export
 #'
-Evapotranspiration<- function(dvs,w,lai,sm,t,DEPNR,SMFCF,IAIRDU,IOX,
+Evapotranspiration<- function(dvs,w,lai,sm,t,dsos,SM0,DEPNR,SMFCF,IAIRDU,IOX,
                               CFET,SMW,CRAIRC,KDIFTB){
 
 

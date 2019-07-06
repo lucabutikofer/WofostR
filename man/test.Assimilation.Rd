@@ -4,7 +4,7 @@
 \alias{test.Assimilation}
 \title{Assimilation routine testing}
 \usage{
-test.Assimilation(yamlFile, plt = TRUE, ...)
+test.Assimilation(yamlFile, plt = TRUE, rtn = FALSE, ...)
 }
 \arguments{
 \item{yamlFile}{Path to yaml test file}

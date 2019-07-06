@@ -2,7 +2,7 @@
 #' Wofost Potential Production
 #'
 #' Computes potential production as per Wofost crop growth algorithm
-#'
+#' @export
 Potential_production<- function(
 
                                 # CROP_END_TYPE,
@@ -38,7 +38,8 @@ Potential_production<- function(
                                 SSI,TBASE,
                                 TBASEM,TDWI,TEFFMX,
                                 TMNFTB,TMPFTB,TSUM1,
-                                TSUM2,TSUMEM,VERNRTB,
+                                TSUM2,TSUMEM,
+                                VERNRTB,SM0,SM,
                                 w,lat,
                                 waterlimited= F
                                 ){
@@ -308,13 +309,13 @@ Potential_production<- function(
       }
 
       # for (v in 1:length(astro)){assign(names(astro)[v], astro[[v]])}
-      pgass<- Totas_Assim(tday,astro$d,astro$sd,lat,astro$sgd,astro$sinbm,
+      pgass<- Totas_Assim(tday,astro$d,astro$sold,lat,astro$sgd,astro$sinbm,
                           astro$dp,s=0.2,lai,dvs,t,tlow,
-                             KDIFTB,
-                             AMAXTB,
-                             TMPFTB,
-                             TMNFTB,
-                             EFFTB)
+                          KDIFTB,
+                          AMAXTB,
+                          TMPFTB,
+                          TMNFTB,
+                          EFFTB)
 
 
 
@@ -324,7 +325,8 @@ Potential_production<- function(
       if (waterlimited == T){
         if (t <= nrow(w)){ # necessary to have model running last row of test.
           sm<- SM[t]
-          evtra<- Evapotranspiration(dvs,w,lai,sm,t,DEPNR,SMFCF,IAIRDU,IOX,
+          evtra<- Evapotranspiration(dvs,w,lai,sm,t,dsos=0,SM0,DEPNR,SMFCF,
+                                     IAIRDU,IOX,
                                      CFET,SMW,CRAIRC,KDIFTB)
           for (v in 1:length(evtra)){assign(names(evtra)[v], evtra[[v]])}
         }
