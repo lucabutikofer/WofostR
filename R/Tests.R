@@ -107,10 +107,11 @@ test.Assimilation<- function(yamlFile, plt = TRUE, rtn = FALSE, ...){
       if (t <= nrow(w)){ # necessary to have model running last row of test.
         astro<- Astro(w,t,lat)
       }
-      for (v in 1:length(astro)){assign(names(astro)[v], astro[[v]])}
+      # for (v in 1:length(astro)){assign(names(astro)[v], astro[[v]])}
 
       # Assimilation
-      out[[t]]<- Totas_Assim(tday,d,sold,lat,sgd,sinbm,dp,s=0.2,lai,
+      out[[t]]<- Totas_Assim(tday,astro$d,astro$sold,lat,astro$sgd,
+                             astro$sinbm,astro$dp,s=0.2,lai,
                              dvs,t,tlow,
                              KDIFTB,
                              AMAXTB,
@@ -505,6 +506,7 @@ test.PotentialProduction<- function(yamlFile, plt = TRUE, rtn = FALSE, ...){
 
   # parameters
   prmt<- yam[["parameters"]]
+  simo<- SimulationObject(parameters = prmt)
 
   # Externals
   ext<- yam$externals
@@ -512,84 +514,14 @@ test.PotentialProduction<- function(yamlFile, plt = TRUE, rtn = FALSE, ...){
   for(i in 2:ncol(ext)){
     ext[,i]<- as.numeric(levels(ext[,i]))[ext[,i]]
   }
-  for (v in 1:length(yam[["externals"]])){
-    assign(names(ext)[v], ext[,v])}
+  # for (v in 1:length(yam[["externals"]])){
+  #   assign(names(ext)[v], ext[,v])}
+
   # run model
   out<- Potential_production(
-                              # fold variables ####
-                              # CROP_END_TYPE = prmt$CROP_END_TYPE,
-                              # CO2 = prmt$CO2,
-                              # CRPNAM = prmt$CRPNAM,
-                              # IFUNRN = prmt$IFUNRN,
-                              # K0 = prmt$K0,
-                              # KSUB = prmt$KSUB,,
-                              # NOTINF = prmt$NOTINF,
-                              # SM0 = prmt$SM0,
-                              # SMLIM = prmt$SMLIM,
-                              # SSMAX = prmt$SSMAX,
-                              # WAV = prmt$WAV,
-
-                              AMAXTB = prmt$AMAXTB,
-                              CFET = prmt$CFET,
-                              CRAIRC = prmt$CRAIRC,
-                              crop_start_type = prmt$CROP_START_TYPE,
-                              CVL = prmt$CVL,
-                              CVO = prmt$CVO,
-                              CVR = prmt$CVR,
-                              CVS = prmt$CVS,
-                              DEPNR = prmt$DEPNR,
-                              DLC = prmt$DLC,
-                              DLO = prmt$DLO,
-                              DTSMTB = prmt$DTSMTB,
-                              DVSEND = prmt$DVSEND,
-                              DVSI = prmt$DVSI,
-                              EFFTB = prmt$EFFTB,
-                              FLTB = prmt$FLTB,
-                              FOTB = prmt$FOTB,
-                              FRTB = prmt$FRTB,
-                              FSTB = prmt$FSTB,
-                              IAIRDU = prmt$IAIRDU,
-                              IDSL = prmt$IDSL,
-                              IOX = prmt$IOX,
-                              KDIFTB = prmt$KDIFTB,
-                              LAIEM = prmt$LAIEM,
-                              PERDL = prmt$PERDL,
-                              Q10 = prmt$Q10,
-                              RDI = prmt$RDI,
-                              RDMCR = prmt$RDMCR,
-                              RDMSOL = prmt$RDMSOL,
-                              RDRRTB = prmt$RDRRTB,
-                              RDRSTB = prmt$RDRSTB,
-                              RFSETB = prmt$RFSETB,
-                              RGRLAI = prmt$RGRLAI,
-                              RML = prmt$RML,
-                              RMO = prmt$RMO,
-                              RMR = prmt$RMR,
-                              RMS = prmt$RMS,
-                              RRI = prmt$RRI,
-                              SLATB = prmt$SLATB,
-                              SMFCF = prmt$SMFCF,
-                              SMW = prmt$SMW,
-                              SPA = prmt$SPA,
-                              SPAN = prmt$SPAN,
-                              SSATB = prmt$SSATB,
-                              SSI = prmt$SSI,
-                              TBASE = prmt$TBASE,
-                              TBASEM = prmt$TBASEM,
-                              TDWI = prmt$TDWI,
-                              TEFFMX = prmt$TEFFMX,
-                              TMNFTB = prmt$TMNFTB,
-                              TMPFTB = prmt$TMPFTB,
-                              TSUM1 = prmt$TSUM1,
-                              TSUM2 = prmt$TSUM2,
-                              TSUMEM = prmt$TSUMEM,
-                              VERNRTB = prmt$VERNRTB,
-                              SM0 = prmt$SM0,
-                              SM = ext$SM,
-                              w=w,lat=lat,
-                              waterlimited= F
-                              # fold variables ####
-                              )
+                             crop=simo, w=w,lat=lat,ext=ext,
+                             waterlimited= T
+                             )
   for (i in 1:length(out)){out[[i]]<-as.numeric(out[[i]])}
   out<- data.frame(do.call(cbind,out))
 

@@ -195,6 +195,95 @@ get.wofost.results <- function(direc,name,variable,section='results'){
   return(varb)
 }
 
+#' Tests afgen() function
+#'
+#' Performs a graphical test to check that afgen() function performs
+#' correcly. Also useful to visualise the shape of the function represented
+#' by an afgen table.
+#'
+#' @importFrom graphics points
+#' @param at atrix. Afgen table
+#' @export
+#'
+test.afgen<- function(at){
+
+  rg<- diff(range(at[,'x']))
+  xt<- sort(c(sample(seq(min(at[,'x']),max(at[,'x']),length.out=100),20),
+              min(at[,'x'])-.2*rg, max(at[,'x'])+.2*rg))
+  yt<-NULL
+  for (i in 1:length(xt)) yt[i]<- afgen(xt[i], at)
+  plot(at,type='b',col=4,xlim= c(min(xt),max(xt)),cex=2,lwd=2)
+  points(xt,yt,col=2,pch=4,cex=1,lwd=2)
+}
+
+
+#' Test Wofost
+#'
+#' Tests different components of this R implementation of Wofost by
+#' comparison with the testing sets published in
+#' De Wit 2018 (Agricultural Systems journal).
+#'
+#' @param component Character. Either one of the testing sets released
+#' in De Wit 2018. Any of "assimilation", "astro", "leafdynamics",
+#' "partitioning", "phenology", "potentialproduction", "respiration",
+#' "rootdynamics", "transpiration", "waterlimitedproduction".
+#' However, currently limited to PP, LD, A.
+#' @param complete Logical. If FALSE only a subset of 3 files per set will be
+#' used for testing.
+#' @export
+#'
+test<- function(component, complete= FALSE){
+
+  allcomp<- c("assimilation", "astro", "leafdynamics",
+             "partitioning", "phenology", "potentialproduction",
+             "respiration", "rootdynamics", "transpiration",
+             "waterlimitedproduction")
+
+  if(isFALSE(component %in% allcomp)){
+    stop(paste0('component ',component,' not available for testing.'))
+  }
+
+  fls<- list.files('../WofostR/inst/extdata/')
+  spl<- strsplit(fls,'_')
+  gr<- NULL # groups of files pertaining the same tests
+  for (i in 1:length(spl)){
+    gr[i]<- spl[[i]][2]
+  }
+
+  # Potential Production
+  if (component == "potentialproduction"){
+    xfls<- fls[gr == 'potentialproduction']
+    if (isFALSE(complete)){xfls<- xfls[sample(1:length(xfls),3)] }
+    for (i in 1:length(xfls)){
+      print(i)
+      yamlFile=paste0('../WofostR/inst/extdata/',xfls[i])
+      test.PotentialProduction(yamlFile, keypress=F)
+    }
+  }
+
+  # Leaf Dynamics
+  if (component == "leafdynamics"){
+    xfls<- fls[gr == 'leafdynamics']
+    if (isFALSE(complete)){xfls<- xfls[sample(1:length(xfls),3)] }
+    for (i in 1:length(xfls)){
+      print(i)
+      yamlFile=paste0('../WofostR/inst/extdata/',xfls[i])
+      test.LeafDynamics(yamlFile, keypress=F)
+    }
+  }
+
+  # Assimilation
+  if (component == "assimilation"){
+    xfls<- fls[gr == 'assimilation']
+    if (isFALSE(complete)){xfls<- xfls[sample(1:length(xfls),3)] }
+    for (i in 1:length(xfls)){
+      print(i)
+      yamlFile=paste0('../WofostR/inst/extdata/',xfls[i])
+      test.Assimilation(yamlFile, keypress=F)
+    }
+  }
+
+}
 
 
 

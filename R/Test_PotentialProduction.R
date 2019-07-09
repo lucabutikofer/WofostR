@@ -3,46 +3,90 @@
 #'
 #' Computes potential production as per Wofost crop growth algorithm
 #' @export
+#'
 Potential_production<- function(
-
-                                # CROP_END_TYPE,
-                                # CO2,
-                                # CRPNAM,
-                                # IFUNRN,
-                                # K0,
-                                # KSUB,
-                                # NOTINF,
-                                # SM0,
-                                # SMLIM,
-                                # SSMAX,
-                                # WAV,
-                                crop_start_type,
-                                AMAXTB,CFET,
-                                CRAIRC,
-                                CVL,CVO,
-                                CVR,CVS,DEPNR,
-                                DLC,DLO,DTSMTB,
-                                DVSEND,DVSI,EFFTB,
-                                FLTB,FOTB,FRTB,
-                                FSTB,IAIRDU,IDSL,
-                                IOX,
-                                KDIFTB,LAIEM,
-                                PERDL,Q10,
-                                RDI,RDMCR,RDMSOL,
-                                RDRRTB,RDRSTB,RFSETB,
-                                RGRLAI,RML,RMO,
-                                RMR,RMS,RRI,
-                                SLATB,SMFCF,
-                                SMW,
-                                SPA,SPAN,SSATB,
-                                SSI,TBASE,
-                                TBASEM,TDWI,TEFFMX,
-                                TMNFTB,TMPFTB,TSUM1,
-                                TSUM2,TSUMEM,
-                                VERNRTB,SM0,SM,
-                                w,lat,
+                                crop, w , lat, ext,
                                 waterlimited= F
                                 ){
+
+  # CROP PARAMETERS ####
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  # Following commented out variables not used in testing PP.
+
+  # CROP_END_TYPE = crop@parameters$CROP_END_TYPE
+  # CO2 = crop@parameters$CO2
+  # CRPNAM = crop@parameters$CRPNAM
+  # IFUNRN = crop@parameters$IFUNRN
+  # K0 = crop@parameters$K0
+  # KSUB = crop@parameters$KSUB
+  # NOTINF = crop@parameters$NOTINF
+  # SM0 = crop@parameters$SM0
+  # SMLIM = crop@parameters$SMLIM
+  # SSMAX = crop@parameters$SSMAX
+  # WAV = crop@parameters$WAV
+  # SSI = crop@parameters$SSI
+
+  AMAXTB = crop@parameters$AMAXTB
+  CFET = crop@parameters$CFET
+  CRAIRC = crop@parameters$CRAIRC
+  crop_start_type = crop@parameters$CROP_START_TYPE
+  CVL = crop@parameters$CVL
+  CVO = crop@parameters$CVO
+  CVR = crop@parameters$CVR
+  CVS = crop@parameters$CVS
+  DEPNR = crop@parameters$DEPNR
+  DLC = crop@parameters$DLC
+  DLO = crop@parameters$DLO
+  DTSMTB = crop@parameters$DTSMTB
+  DVSEND = crop@parameters$DVSEND
+  DVSI = crop@parameters$DVSI
+  EFFTB = crop@parameters$EFFTB
+  FLTB = crop@parameters$FLTB
+  FOTB = crop@parameters$FOTB
+  FRTB = crop@parameters$FRTB
+  FSTB = crop@parameters$FSTB
+  IAIRDU = crop@parameters$IAIRDU
+  IDSL = crop@parameters$IDSL
+  IOX = crop@parameters$IOX
+  KDIFTB = crop@parameters$KDIFTB
+  LAIEM = crop@parameters$LAIEM
+  PERDL = crop@parameters$PERDL
+  Q10 = crop@parameters$Q10
+  RDI = crop@parameters$RDI
+  RDMCR = crop@parameters$RDMCR
+  RDMSOL = crop@parameters$RDMSOL
+  RDRRTB = crop@parameters$RDRRTB
+  RDRSTB = crop@parameters$RDRSTB
+  RFSETB = crop@parameters$RFSETB
+  RGRLAI = crop@parameters$RGRLAI
+  RML = crop@parameters$RML
+  RMO = crop@parameters$RMO
+  RMR = crop@parameters$RMR
+  RMS = crop@parameters$RMS
+  RRI = crop@parameters$RRI
+  SLATB = crop@parameters$SLATB
+  SMFCF = crop@parameters$SMFCF
+  SMW = crop@parameters$SMW
+  SPA = crop@parameters$SPA
+  SPAN = crop@parameters$SPAN
+  SSATB = crop@parameters$SSATB
+  TBASE = crop@parameters$TBASE
+  TBASEM = crop@parameters$TBASEM
+  TDWI = crop@parameters$TDWI
+  TEFFMX = crop@parameters$TEFFMX
+  TMNFTB = crop@parameters$TMNFTB
+  TMPFTB = crop@parameters$TMPFTB
+  TSUM1 = crop@parameters$TSUM1
+  TSUM2 = crop@parameters$TSUM2
+  TSUMEM = crop@parameters$TSUMEM
+  VERNRTB = crop@parameters$VERNRTB
+  SM0 = crop@parameters$SM0
+  VERNDVS = crop@parameters$VERNDVS
+  VERNBASE = crop@parameters$VERNBASE
+  VERNSAT = crop@parameters$VERNSAT
+
+  SM = ext$SM
 
 
   # VARIABLE DECLARATIONS ####
@@ -51,6 +95,7 @@ Potential_production<- function(
   # loop control parameters
   STOP<- FALSE
   t<- 1
+
   # output containers
   dvs_out<- NULL     # phenology
   dvr_out<- NULL     # phenology
@@ -66,6 +111,7 @@ Potential_production<- function(
   rd_out<- NULL      # root depth
   tra_out<- NULL     # transpiration
 
+  # Helper variables
   gass<- 0
   astro<- 0
   rmt<- 0
@@ -212,7 +258,7 @@ Potential_production<- function(
         stop('Error in partitioning of initial biomass (TDWI)')
       }
 
-    } # end of first iteration of the model
+    } # end of if first iteration of the model
 
 
 
@@ -628,6 +674,8 @@ Potential_production<- function(
     } # end of post-finish-conditions-test section
   } # end of daily cycles
 
+  # LOOP ENDS ####
+  #~~~~~~~~~~~~~~~
 
   # FINALISATION ####
   #~~~~~~~~~~~~~~~~~~
