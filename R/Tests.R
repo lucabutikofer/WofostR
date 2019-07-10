@@ -80,7 +80,7 @@ test.Assimilation<- function(yamlFile, plt = TRUE, rtn = FALSE, ...){
     assign(names(yam[["parameters"]])[v], yam[["parameters"]][[v]])}
 
   # Run model
-  out<-NULL
+  pgass<-NULL
   for (t in 1:nrow(w)){
 
     lai<- LAI[t]
@@ -93,11 +93,8 @@ test.Assimilation<- function(yamlFile, plt = TRUE, rtn = FALSE, ...){
       tday<- (w$TMAX[t] + temp)/2
     }
 
-    # Nighttime 7 days running minimum temperature
-    if (t <= nrow(w)){ # necessary to have model to run till last row of test.
-      tmins<- w$TMIN[(max(t-6,1)):t]
-    }
-    tlow<- week_tmin_av(tmins)
+    # Initialise nighttime 7 days running minimum temperature
+    if(t == 1){tmins<- NULL} # generate empty timins if not there yet
 
     # Before emergence there is no need to continue
     # because only the phenology is running.
@@ -110,25 +107,25 @@ test.Assimilation<- function(yamlFile, plt = TRUE, rtn = FALSE, ...){
       # for (v in 1:length(astro)){assign(names(astro)[v], astro[[v]])}
 
       # Assimilation
-      out[[t]]<- Totas_Assim(tday,astro$d,astro$sold,lat,astro$sgd,
-                             astro$sinbm,astro$dp,s=0.2,lai,
-                             dvs,t,tlow,
-                             KDIFTB,
-                             AMAXTB,
-                             TMPFTB,
-                             TMNFTB,
-                             EFFTB)
-    } else { out[[t]] <- 0}
+      out<- Assimilation(AMAXTB,TMPFTB,KDIFTB,EFFTB,TMNFTB,
+                          d=astro$d, lai=lai, sgd=sgd, dp=astro$dp,
+                          sinbm=astro$sinbm,
+                          sinld=astro$sinld, cosld=astro$cosld, dvs=dvs,
+                          tday=tday, w=w, t=t, tmins=tmins
+      )
+    } else { out <- list(0, NULL)}
+    tmins<- out$tmins
+    pgass[[t]]<- out$pgass
   }
-  out <- data.frame(out)
+  pgass <- data.frame(pgass)
 
   contr<- yam$results
   contr[,1]<- as.Date(contr[,1])
   contr[,2]<- as.numeric(levels(contr[,2]))[contr[,2]]
 
   if (isTRUE(plt)){
-    plot.wofost.test(control = contr, output = out, weather = w,
-                     precision = yam[["precision"]], ...)
+    plot.wofost.test(control = contr, output = pgass, weather = w,
+                     precision = yam[["precision"]],...)
   }
 
   if(isTRUE(rtn)) return(list('output'=out,'control'=contr))
@@ -506,7 +503,7 @@ test.PotentialProduction<- function(yamlFile, plt = TRUE, rtn = FALSE, ...){
 
   # parameters
   prmt<- yam[["parameters"]]
-  simo<- SimulationObject(parameters = prmt)
+  simo<- CropObject(prmt)
 
   # Externals
   ext<- yam$externals

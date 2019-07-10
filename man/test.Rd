@@ -4,13 +4,14 @@
 \alias{test}
 \title{Test Wofost}
 \usage{
-test(component, complete = FALSE)
+test(component = "All", complete = FALSE)
 }
 \arguments{
 \item{component}{Character. Either one of the testing sets released
 in De Wit 2018. Any of "assimilation", "astro", "leafdynamics",
 "partitioning", "phenology", "potentialproduction", "respiration",
-"rootdynamics", "transpiration", "waterlimitedproduction".
+"rootdynamics", "transpiration", "waterlimitedproduction". If not specified
+will run all available components.
 However, currently limited to PP, LD, A.}
 
 \item{complete}{Logical. If FALSE only a subset of 3 files per set will be

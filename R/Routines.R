@@ -235,6 +235,172 @@ Totas_Assim<- function(tday,d,sold,lat,sgd,sinbm,dp,s=0.2,lai,dvs,t,tlow,
 }
 
 
+#' Assimilation routine as in PCSE/WOFOST
+#'
+#' Computes "pgass" (Potential assimilation rate). Calls functions "totass()"
+#' and "assim()"
+#'
+#' @export
+#'
+Assimilation<- function(
+  AMAXTB,TMPFTB,KDIFTB,EFFTB,TMNFTB,
+  d, lai, sgd, dp, sinbm, sinld, cosld, dvs,
+  tday, w, t, tmins
+){
+
+  # d:       From Astro. Astronomic day length
+  # sinld:   From Astro. Seasonal offset of sine of solar height
+  # cosld:   From Astro. Amplitude of sine of solar height
+  # sinbm:   From Astro. Integral of effective solar height
+  # dp:      From Astro. Diffuse radiation perpendicular to the direction
+  #          of light
+
+  # 7-day running average of TMIN
+  if (t <= nrow(w)){ # necessary to have model running last row of test.
+    tmins<- c(w$TMIN[t], tmins)
+    tmins<- tmins[1:min(7,length(tmins))]
+  }
+  tlow<- week_tmin_av(tmins)
+
+  # gross assimilation and correction for sub-optimum average day temperature
+  amax<- afgen(dvs, AMAXTB)
+  amax<- amax* afgen(tday, TMPFTB)
+  kdif<- afgen(dvs, KDIFTB)
+  eff<- afgen(tday, EFFTB)
+  dtga<- totass(d, amax, eff, lai, kdif, sgd,
+                dp, sinbm, sinld, cosld)
+
+  # correction for low minimum temperature potential
+  dtga<- dtga*afgen(tlow, TMNFTB)
+
+  # assimilation in kg CH2O per ha
+  pgass<- dtga * 30/44
+
+  return(list('pgass'=pgass,
+              'tmins'=tmins))
+
+}
+
+
+#' Function totass as in PCSE/WOFOST (Python version)
+#'
+#' This routine calculates the daily total gross CO2 assimilation by
+#' performing a Gaussian integration over time. At three different times of
+#' the day, irradiance is computed and used to calculate the instantaneous
+#' canopy assimilation, whereafter integration takes place. More information
+#' on this routine is given by Spitters et al. (1988).
+#'
+#' @export
+#'
+totass<- function(d, amax, eff, lai, kdif, sgd,
+                  dp, sinbm, sinld, cosld){
+
+  # d:       From Astro. Astronomic day length
+  # sinld:   From Astro. Seasonal offset of sine of solar height
+  # cosld:   From Astro. Amplitude of sine of solar height
+  # dsinbm:  From Astro. Integral of effective solar height
+  # dp:      From Astro. Diffuse radiation perpendicular to the direction
+  #          of light
+
+  # Gauss points and weights
+  xgauss<- c(0.1127017, 0.5000000, 0.8872983)
+  wgauss<- c(0.2777778, 0.4444444, 0.2777778)
+
+  # calculation of assimilation is done only when it will not be zero
+  # (amax >0, lai >0, d >0)
+  dtga<- 0
+  if (amax > 0 & lai > 0 & d > 0){
+    for (i in 1:3){
+      hour<- 12 + 0.5*d*xgauss[i]
+      sinb<-  max(0, sinld + cosld*cos(2*pi*(hour + 12)/24))
+      parr<- 0.5*sgd*sinb*(1 + 0.4*sinb)/sinbm
+      pardif<- min(parr,sinb*dp)
+      pardir<- parr - pardif
+      fgros<- assim(amax,eff,lai,kdif,sinb,pardir,pardif)
+      dtga<- dtga + fgros*wgauss[i]
+    }
+  }
+  dtga<- dtga*d
+
+  return(dtga)
+
+}
+
+
+#' Function assim
+#'
+#' This routine calculates the gross CO2 assimilation rate of
+#' the whole crop, FGROS, by performing a Gaussian integration
+#' over depth in the crop canopy. At three different depths in
+#' the canopy, i.e. for different values of LAI, the
+#' assimilation rate is computed for given fluxes of photosynthe-
+#' tically active radiation, whereafter integration over depth
+#' takes place. More information on this routine is given by
+#' Spitters et al. (1988). The input variables SINB, PARDIR
+#' and PARDIF are calculated in routine TOTASS.
+#'
+#' Subroutines and functions called: none.
+#' Called by routine TOTASS.
+#'
+#' @export
+#'
+assim<- function(amax,eff,lai,kdif,sinb,pardir,pardif){
+
+  # Gauss points and weights
+  xgauss<- c(0.1127017, 0.5000000, 0.8872983)
+  wgauss<- c(0.2777778, 0.4444444, 0.2777778)
+
+  scv<- 0.2
+
+  # Extinction coefficients kdirbl & kdirt
+  refh<- (1 - sqrt(1 - scv))/(1 + sqrt(1 - scv))
+  refs<- refh*2/(1 + 1.6*sinb)
+  kdirbl<- (0.5/sinb)*kdif/(0.8*sqrt(1 - scv))
+  kdirt<- kdirbl*sqrt(1 - scv)
+
+  # Three-point Gaussian integration over lai
+  fgros<- 0
+  for (i in 1:3){
+
+    laic<- lai*xgauss[i]
+
+    # Absorbed diffuse radiation (visdf),light from direct
+    # origine (vist) and direct light (visd)
+    visdf<- (1 - refs)*pardif*kdif*exp(-kdif*laic)
+    vist<- (1 - refs)*pardir*kdirt*exp(-kdirt*laic)
+    visd<- (1 - scv)*pardir*kdirbl*exp(-kdirbl*laic)
+
+    # absorbed flux in W/m2 for shaded leaves and assimilation
+    visshd<- visdf + vist - visd
+    fgrsh<- amax*(1 - exp(-visshd*eff/max(2, amax)))
+
+    # direct light absorbed by leaves perpendicular to direct
+    # beam and assimilation of sunlit leaf area
+    vispp<- (1 - scv)*pardir/sinb
+    if (vispp <= 0){
+      fgrsun<- fgrsh
+    } else {
+      fgrsun<- amax*(1 - (amax - fgrsh)*
+                       (1 - exp(-vispp*eff/max(2, amax)))/(eff*vispp))
+    }
+
+    # fraction of sunlit leaf area (fslla) and local
+    # assimilation rate (fgl)
+    fslla<- exp(-kdirbl*laic)
+    fgl<- fslla*fgrsun + (1 - fslla)*fgrsh
+
+    # integration
+    fgros<- fgros + fgl*wgauss[i]
+
+  }
+
+  fgros<- fgros*lai
+
+  return(fgros)
+
+}
+
+
 #' Evapotranspiration
 #'
 #' Routine Evapotranspiration computes evapotranspiration rates from crop

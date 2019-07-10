@@ -14,77 +14,77 @@ Potential_production<- function(
 
   # Following commented out variables not used in testing PP.
 
-  # CROP_END_TYPE = crop@parameters$CROP_END_TYPE
-  # CO2 = crop@parameters$CO2
-  # CRPNAM = crop@parameters$CRPNAM
-  # IFUNRN = crop@parameters$IFUNRN
-  # K0 = crop@parameters$K0
-  # KSUB = crop@parameters$KSUB
-  # NOTINF = crop@parameters$NOTINF
-  # SM0 = crop@parameters$SM0
-  # SMLIM = crop@parameters$SMLIM
-  # SSMAX = crop@parameters$SSMAX
-  # WAV = crop@parameters$WAV
-  # SSI = crop@parameters$SSI
+  # CROP_END_TYPE = crop@CROP_END_TYPE
+  # CO2 = crop@CO2
+  # CRPNAM = crop@CRPNAM
+  # IFUNRN = crop@IFUNRN
+  # K0 = crop@K0
+  # KSUB = crop@KSUB
+  # NOTINF = crop@NOTINF
+  # SM0 = crop@SM0
+  # SMLIM = crop@SMLIM
+  # SSMAX = crop@SSMAX
+  # WAV = crop@WAV
+  # SSI = crop@SSI
 
-  AMAXTB = crop@parameters$AMAXTB
-  CFET = crop@parameters$CFET
-  CRAIRC = crop@parameters$CRAIRC
-  crop_start_type = crop@parameters$CROP_START_TYPE
-  CVL = crop@parameters$CVL
-  CVO = crop@parameters$CVO
-  CVR = crop@parameters$CVR
-  CVS = crop@parameters$CVS
-  DEPNR = crop@parameters$DEPNR
-  DLC = crop@parameters$DLC
-  DLO = crop@parameters$DLO
-  DTSMTB = crop@parameters$DTSMTB
-  DVSEND = crop@parameters$DVSEND
-  DVSI = crop@parameters$DVSI
-  EFFTB = crop@parameters$EFFTB
-  FLTB = crop@parameters$FLTB
-  FOTB = crop@parameters$FOTB
-  FRTB = crop@parameters$FRTB
-  FSTB = crop@parameters$FSTB
-  IAIRDU = crop@parameters$IAIRDU
-  IDSL = crop@parameters$IDSL
-  IOX = crop@parameters$IOX
-  KDIFTB = crop@parameters$KDIFTB
-  LAIEM = crop@parameters$LAIEM
-  PERDL = crop@parameters$PERDL
-  Q10 = crop@parameters$Q10
-  RDI = crop@parameters$RDI
-  RDMCR = crop@parameters$RDMCR
-  RDMSOL = crop@parameters$RDMSOL
-  RDRRTB = crop@parameters$RDRRTB
-  RDRSTB = crop@parameters$RDRSTB
-  RFSETB = crop@parameters$RFSETB
-  RGRLAI = crop@parameters$RGRLAI
-  RML = crop@parameters$RML
-  RMO = crop@parameters$RMO
-  RMR = crop@parameters$RMR
-  RMS = crop@parameters$RMS
-  RRI = crop@parameters$RRI
-  SLATB = crop@parameters$SLATB
-  SMFCF = crop@parameters$SMFCF
-  SMW = crop@parameters$SMW
-  SPA = crop@parameters$SPA
-  SPAN = crop@parameters$SPAN
-  SSATB = crop@parameters$SSATB
-  TBASE = crop@parameters$TBASE
-  TBASEM = crop@parameters$TBASEM
-  TDWI = crop@parameters$TDWI
-  TEFFMX = crop@parameters$TEFFMX
-  TMNFTB = crop@parameters$TMNFTB
-  TMPFTB = crop@parameters$TMPFTB
-  TSUM1 = crop@parameters$TSUM1
-  TSUM2 = crop@parameters$TSUM2
-  TSUMEM = crop@parameters$TSUMEM
-  VERNRTB = crop@parameters$VERNRTB
-  SM0 = crop@parameters$SM0
-  VERNDVS = crop@parameters$VERNDVS
-  VERNBASE = crop@parameters$VERNBASE
-  VERNSAT = crop@parameters$VERNSAT
+  AMAXTB = crop@AMAXTB
+  CFET = crop@CFET
+  CRAIRC = crop@CRAIRC
+  crop_start_type = crop@CROP_START_TYPE
+  CVL = crop@CVL
+  CVO = crop@CVO
+  CVR = crop@CVR
+  CVS = crop@CVS
+  DEPNR = crop@DEPNR
+  DLC = crop@DLC
+  DLO = crop@DLO
+  DTSMTB = crop@DTSMTB
+  DVSEND = crop@DVSEND
+  DVSI = crop@DVSI
+  EFFTB = crop@EFFTB
+  FLTB = crop@FLTB
+  FOTB = crop@FOTB
+  FRTB = crop@FRTB
+  FSTB = crop@FSTB
+  IAIRDU = crop@IAIRDU
+  IDSL = crop@IDSL
+  IOX = crop@IOX
+  KDIFTB = crop@KDIFTB
+  LAIEM = crop@LAIEM
+  PERDL = crop@PERDL
+  Q10 = crop@Q10
+  RDI = crop@RDI
+  RDMCR = crop@RDMCR
+  RDMSOL = crop@RDMSOL
+  RDRRTB = crop@RDRRTB
+  RDRSTB = crop@RDRSTB
+  RFSETB = crop@RFSETB
+  RGRLAI = crop@RGRLAI
+  RML = crop@RML
+  RMO = crop@RMO
+  RMR = crop@RMR
+  RMS = crop@RMS
+  RRI = crop@RRI
+  SLATB = crop@SLATB
+  SMFCF = crop@SMFCF
+  SMW = crop@SMW
+  SPA = crop@SPA
+  SPAN = crop@SPAN
+  SSATB = crop@SSATB
+  TBASE = crop@TBASE
+  TBASEM = crop@TBASEM
+  TDWI = crop@TDWI
+  TEFFMX = crop@TEFFMX
+  TMNFTB = crop@TMNFTB
+  TMPFTB = crop@TMPFTB
+  TSUM1 = crop@TSUM1
+  TSUM2 = crop@TSUM2
+  TSUMEM = crop@TSUMEM
+  VERNRTB = crop@VERNRTB
+  SM0 = crop@SM0
+  VERNDVS = crop@VERNDVS
+  VERNBASE = crop@VERNBASE
+  VERNSAT = crop@VERNSAT
 
   SM = ext$SM
 
@@ -143,6 +143,9 @@ Potential_production<- function(
       isvernalised<- FALSE
       force_vernalisation<- FALSE
       dov<- NULL # date of vernalisation
+
+      # Initialise nighttime 7 days running minimum temperature
+      tmins<- NULL
 
       # Define initial stage type (emergence/sowing)
       if (crop_start_type == "emergence"){
@@ -258,7 +261,7 @@ Potential_production<- function(
         stop('Error in partitioning of initial biomass (TDWI)')
       }
 
-    } # end of if first iteration of the model
+    } # end of first iteration of the model
 
 
 
@@ -274,12 +277,6 @@ Potential_production<- function(
       temp<- (w$TMIN[t] + w$TMAX[t])/2
       tday<- (w$TMAX[t] + temp)/2
     }
-
-    # Nighttime 7 days running minimum temperature
-    if (t <= nrow(w)){ # necessary to have model to run till last row of test.
-      tmins<- w$TMIN[max(t-6,1):t]
-    }
-    tlow<- week_tmin_av(tmins)
 
 
     # >> PHENOLOGY ####
@@ -355,15 +352,15 @@ Potential_production<- function(
       }
 
       # for (v in 1:length(astro)){assign(names(astro)[v], astro[[v]])}
-      pgass<- Totas_Assim(tday,astro$d,astro$sold,lat,astro$sgd,astro$sinbm,
-                          astro$dp,s=0.2,lai,dvs,t,tlow,
-                          KDIFTB,
-                          AMAXTB,
-                          TMPFTB,
-                          TMNFTB,
-                          EFFTB)
-
-
+      out<- Assimilation(
+                         AMAXTB,TMPFTB,KDIFTB,EFFTB,TMNFTB,
+                         d=astro$d, lai=lai, sgd=astro$sgd, dp=astro$dp,
+                         sinbm=astro$sinbm,
+                         sinld=astro$sinld, cosld=astro$cosld, dvs=dvs,
+                         tday=tday, w=w, t=t, tmins=tmins
+                         )
+      tmins<- out$tmins # updated tmins to feed into next cycle
+      pgass<- out$pgass
 
 
       # >> EVAPOTRANSPIRATION ####

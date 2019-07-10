@@ -48,11 +48,17 @@ read.wofost.yaml<- function(yamlFile){
 
   # Model parameters
   parm<- ryam[["ModelParameters"]]
+  parmClass<-NULL
   for (i in 1:length(parm)){
     if(length((parm[[i]])) > 1){
       parm[[i]]<- make.afgen(parm[[i]])
     }
+    parmClass[[i]]<- class(parm[[i]])
   }
+  if ('list' %in% parmClass){
+    parm[[which(parmClass == 'list')]]<- NULL
+  }
+
 
   # Model Results
   res<- ryam[["ModelResults"]]
@@ -226,22 +232,26 @@ test.afgen<- function(at){
 #' @param component Character. Either one of the testing sets released
 #' in De Wit 2018. Any of "assimilation", "astro", "leafdynamics",
 #' "partitioning", "phenology", "potentialproduction", "respiration",
-#' "rootdynamics", "transpiration", "waterlimitedproduction".
+#' "rootdynamics", "transpiration", "waterlimitedproduction". If not specified
+#' will run all available components.
 #' However, currently limited to PP, LD, A.
 #' @param complete Logical. If FALSE only a subset of 3 files per set will be
 #' used for testing.
 #' @export
 #'
-test<- function(component, complete= FALSE){
+test<- function(component= "All", complete= FALSE){
 
   allcomp<- c("assimilation", "astro", "leafdynamics",
              "partitioning", "phenology", "potentialproduction",
              "respiration", "rootdynamics", "transpiration",
              "waterlimitedproduction")
 
-  if(isFALSE(component %in% allcomp)){
-    stop(paste0('component ',component,' not available for testing.'))
-  }
+  if(component != "All"){
+    if(isFALSE(component %in% allcomp)){
+      stop(paste0('component ',component,' not available for testing.'))
+    }
+    testall<- FALSE
+  } else {testall<- TRUE}
 
   fls<- list.files('../WofostR/inst/extdata/')
   spl<- strsplit(fls,'_')
@@ -251,7 +261,8 @@ test<- function(component, complete= FALSE){
   }
 
   # Potential Production
-  if (component == "potentialproduction"){
+  if (component == "potentialproduction" | testall == TRUE){
+    cat('\n','Testing Potential Production','\n','\n')
     xfls<- fls[gr == 'potentialproduction']
     if (isFALSE(complete)){xfls<- xfls[sample(1:length(xfls),3)] }
     for (i in 1:length(xfls)){
@@ -262,7 +273,8 @@ test<- function(component, complete= FALSE){
   }
 
   # Leaf Dynamics
-  if (component == "leafdynamics"){
+  if (component == "leafdynamics" | testall == TRUE){
+    cat('\n','Testing Leaf Dynamics','\n','\n')
     xfls<- fls[gr == 'leafdynamics']
     if (isFALSE(complete)){xfls<- xfls[sample(1:length(xfls),3)] }
     for (i in 1:length(xfls)){
@@ -273,7 +285,8 @@ test<- function(component, complete= FALSE){
   }
 
   # Assimilation
-  if (component == "assimilation"){
+  if (component == "assimilation" | testall == TRUE){
+    cat('\n','Testing Assimilation','\n','\n')
     xfls<- fls[gr == 'assimilation']
     if (isFALSE(complete)){xfls<- xfls[sample(1:length(xfls),3)] }
     for (i in 1:length(xfls)){
