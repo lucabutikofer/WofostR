@@ -273,9 +273,9 @@ Potential_production<- function(
     # >> TEMPERATURE ####
 
     # average temperature and average daytemperature
-    if (t <= nrow(w)){ # necessary to have model to run till last row of test.
-      temp<- (w$TMIN[t] + w$TMAX[t])/2
-      tday<- (w$TMAX[t] + temp)/2
+    if (t <= length(w@DAY)){ # necessary to have model to run till last row of test.
+      temp<- (w@TMIN[t] + w@TMAX[t])/2
+      tday<- (w@TMAX[t] + temp)/2
     }
 
 
@@ -284,7 +284,7 @@ Potential_production<- function(
     # Day length sensitivity
     dvred<- 1
     if (IDSL >= 1){ # if pre-anthesis development depends on daylength
-      if (t <= nrow(w)){ # necessary to have model running last row of test.
+      if (t <= length(w@DAY)){ # necessary to have model running last row of test.
         astro<- Astro(w,t,lat)
       }
       if(DLC==-99 | DLO==-99){stop('DLC and/or DLO is set to -99.')}
@@ -346,7 +346,7 @@ Potential_production<- function(
       # >> POTENTIAL ASSIMILATION ####
 
       if (IDSL < 1){ # if astro was not computed for day length sensitivity
-        if (t <= nrow(w)){ # necessary to have model running last row of test.
+        if (t <= length(w@DAY)){ # necessary to have model running last row of test.
           astro<- Astro(w,t,lat)
         }
       }
@@ -366,7 +366,7 @@ Potential_production<- function(
       # >> EVAPOTRANSPIRATION ####
 
       if (waterlimited == T){
-        if (t <= nrow(w)){ # necessary to have model running last row of test.
+        if (t <= length(w@DAY)){ # necessary to have model running last row of test.
           sm<- SM[t]
           evtra<- Evapotranspiration(dvs,w,lai,sm,t,dsos=0,SM0,DEPNR,SMFCF,
                                      IAIRDU,IOX,
@@ -417,13 +417,13 @@ Potential_production<- function(
       # Organ partitioning check
       if (isFALSE(org_part_check(fl,fo,fs,fr))){
         stop(paste0('Organ partitioning check not passed on day ',
-                    w$DAY[t],'. fl=',fl,' fo=',fo,' fs=',fs,' fr=',fr))
+                    w@DAY[t],'. fl=',fl,' fo=',fo,' fs=',fs,' fr=',fr))
       }
 
       # Carbon balance check
       if (isFALSE(carb_bal_check(fl,fo,fs,fr,gass,rmt,dmi,cvf))){
         stop(paste('Carbon balance check not passed on day ',
-             w$DAY[t],'. fl=',fl,' fo=',fo,' fs=',fs,' fr=',fr,
+             w@DAY[t],'. fl=',fl,' fo=',fo,' fs=',fs,' fr=',fr,
              ' gass=',gass,' rmt=',rmt,' dmi=',dmi,' cvf=',cvf))
       }
 
@@ -498,7 +498,7 @@ Potential_production<- function(
     # > TEST FINISH CONDITIONS ####
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    if (t > nrow(w)) {STOP<- TRUE}
+    if (t > length(w@DAY)) {STOP<- TRUE}
     if (isFALSE(STOP)){ # continue only if finish conditions are
                         # not reached.
 

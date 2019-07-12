@@ -13,3 +13,6 @@ the day, irradiance is computed and used to calculate the instantaneous
 canopy assimilation, whereafter integration takes place. More information
 on this routine is given by Spitters et al. (1988).
 }
+\details{
+Called by Assimilation. Calls Assim.
+}

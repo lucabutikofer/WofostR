@@ -16,7 +16,7 @@
 #'
 test.Astro<- function(yamlFile, plt = TRUE, rtn = FALSE, ...){
 
-  yam<- read.wofost.yaml(yamlFile = yamlFile)
+  yam<- read.test.yaml(yamlFile = yamlFile)
 
   # Weather
   w<- yam$weather
@@ -25,9 +25,10 @@ test.Astro<- function(yamlFile, plt = TRUE, rtn = FALSE, ...){
     w[,i]<- as.numeric(levels(w[,i]))[w[,i]]
   }
   lat<- w$LAT[1]
+  w<- WeatherObject(w)
 
   out<-NULL
-  for (t in 1:nrow(w)){out[[t]]<- Astro(w=w,t=t,lat=lat)}
+  for (t in 1:length(w@DAY)){out[[t]]<- Astro(w=w,t=t,lat=lat)}
   for (t in 1:length(out)){out[[t]] <- unlist(out[[t]])}
   out <- data.frame(do.call(rbind,out))
 
@@ -55,7 +56,7 @@ test.Astro<- function(yamlFile, plt = TRUE, rtn = FALSE, ...){
 #'
 test.Assimilation<- function(yamlFile, plt = TRUE, rtn = FALSE, ...){
 
-  yam<- read.wofost.yaml(yamlFile = yamlFile)
+  yam<- read.test.yaml(yamlFile = yamlFile)
 
   # Weather
   w<- yam$weather
@@ -64,6 +65,7 @@ test.Assimilation<- function(yamlFile, plt = TRUE, rtn = FALSE, ...){
     w[,i]<- as.numeric(levels(w[,i]))[w[,i]]
   }
   lat<- w$LAT[1]
+  w<- WeatherObject(w)
 
   # Externals
   ext<- yam$externals
@@ -81,16 +83,16 @@ test.Assimilation<- function(yamlFile, plt = TRUE, rtn = FALSE, ...){
 
   # Run model
   pgass<-NULL
-  for (t in 1:nrow(w)){
+  for (t in 1:length(w@DAY)){
 
     lai<- LAI[t]
     dvs<- DVS[t]
-    sgd<- w$IRRAD[t]
+    sgd<- w@IRRAD[t]
 
     # average temperature and average daytemperature
-    if (t <= nrow(w)){ # necessary to have model to run till last row of test.
-      temp<- (w$TMIN[t] + w$TMAX[t])/2
-      tday<- (w$TMAX[t] + temp)/2
+    if (t <= length(w@DAY)){ # necessary to have model to run till last row of test.
+      temp<- (w@TMIN[t] + w@TMAX[t])/2
+      tday<- (w@TMAX[t] + temp)/2
     }
 
     # Initialise nighttime 7 days running minimum temperature
@@ -101,7 +103,7 @@ test.Assimilation<- function(yamlFile, plt = TRUE, rtn = FALSE, ...){
     if (dvs >= 0){
 
       # Astro
-      if (t <= nrow(w)){ # necessary to have model running last row of test.
+      if (t <= length(w@DAY)){ # necessary to have model running last row of test.
         astro<- Astro(w,t,lat)
       }
       # for (v in 1:length(astro)){assign(names(astro)[v], astro[[v]])}
@@ -147,7 +149,7 @@ test.Assimilation<- function(yamlFile, plt = TRUE, rtn = FALSE, ...){
 #'
 test.Respiration<- function(yamlFile, plt = TRUE, ...){
 
-  yam<- read.wofost.yaml(yamlFile = yamlFile)
+  yam<- read.test.yaml(yamlFile = yamlFile)
 
   # Weather
   w<- yam$weather
@@ -155,6 +157,7 @@ test.Respiration<- function(yamlFile, plt = TRUE, ...){
   for(i in 2:ncol(w)){
     w[,i]<- as.numeric(levels(w[,i]))[w[,i]]
   }
+  w<- WeatherObject(w)
 
   # Externals
   ext<- yam$externals
@@ -172,7 +175,7 @@ test.Respiration<- function(yamlFile, plt = TRUE, ...){
 
   # Run model
   out<-NULL
-  for (t in 1:nrow(w)){
+  for (t in 1:length(w@DAY)){
 
     dvs<- DVS[t]
     wlv<- WLV[t]
@@ -181,8 +184,8 @@ test.Respiration<- function(yamlFile, plt = TRUE, ...){
     wrt<- WRT[t]
 
     # average temperature and average daytemperature
-    if (t <= nrow(w)){ # necessary to have model to run till last row of test.
-      temp<- (w$TMIN[t] + w$TMAX[t])/2
+    if (t <= length(w@DAY)){ # necessary to have model to run till last row of test.
+      temp<- (w@TMIN[t] + w@TMAX[t])/2
     }
 
     # Before emergence there is no need to continue
@@ -232,7 +235,7 @@ test.Respiration<- function(yamlFile, plt = TRUE, ...){
 #'
 test.Partitioning<- function(yamlFile, plt = TRUE, ...){
 
-  yam<- read.wofost.yaml(yamlFile = yamlFile)
+  yam<- read.test.yaml(yamlFile = yamlFile)
 
   # Weather
   w<- yam$weather
@@ -240,6 +243,7 @@ test.Partitioning<- function(yamlFile, plt = TRUE, ...){
   for(i in 2:ncol(w)){
     w[,i]<- as.numeric(levels(w[,i]))[w[,i]]
   }
+  w<- WeatherObject(w)
 
   # Externals
   ext<- yam$externals
@@ -256,7 +260,7 @@ test.Partitioning<- function(yamlFile, plt = TRUE, ...){
 
   # Run model
   out<-NULL
-  for (t in 1:nrow(w)){
+  for (t in 1:length(w@DAY)){
 
     dvs<- DVS[t]
 
@@ -298,7 +302,7 @@ test.Partitioning<- function(yamlFile, plt = TRUE, ...){
 #'
 test.RootDynamics<- function(yamlFile, plt = TRUE, ...){
 
-  yam<- read.wofost.yaml(yamlFile = yamlFile)
+  yam<- read.test.yaml(yamlFile = yamlFile)
 
   # Weather
   w<- yam$weather
@@ -306,6 +310,7 @@ test.RootDynamics<- function(yamlFile, plt = TRUE, ...){
   for(i in 2:ncol(w)){
     w[,i]<- as.numeric(levels(w[,i]))[w[,i]]
   }
+  w<- WeatherObject(w)
 
   # Externals
   ext<- yam$externals
@@ -358,7 +363,7 @@ test.RootDynamics<- function(yamlFile, plt = TRUE, ...){
 #'
 test.LeafDynamics<- function(yamlFile, plt = TRUE, rtn = FALSE,...){
 
-  yam<- read.wofost.yaml(yamlFile = yamlFile)
+  yam<- read.test.yaml(yamlFile = yamlFile)
 
   # Weather
   w<- yam$weather
@@ -366,6 +371,7 @@ test.LeafDynamics<- function(yamlFile, plt = TRUE, rtn = FALSE,...){
   for(i in 2:ncol(w)){
     w[,i]<- as.numeric(levels(w[,i]))[w[,i]]
   }
+  w<- WeatherObject(w)
 
   # Externals
   ext<- yam$externals
@@ -417,7 +423,7 @@ test.LeafDynamics<- function(yamlFile, plt = TRUE, rtn = FALSE,...){
 #'
 test.Evapotranspiration<- function(yamlFile, plt = TRUE, ...){
 
-  yam<- read.wofost.yaml(yamlFile = yamlFile)
+  yam<- read.test.yaml(yamlFile = yamlFile)
 
   # Weather
   w<- yam$weather
@@ -425,6 +431,7 @@ test.Evapotranspiration<- function(yamlFile, plt = TRUE, ...){
   for(i in 2:ncol(w)){
     w[,i]<- as.numeric(levels(w[,i]))[w[,i]]
   }
+  w<- WeatherObject(w)
 
   # Externals
   # Externals
@@ -442,7 +449,7 @@ test.Evapotranspiration<- function(yamlFile, plt = TRUE, ...){
 
   # Run model
   out<- NULL
-  for (t in 1:nrow(w)){
+  for (t in 1:length(w@DAY)){
     lai<- LAI[t]
     sm<- SM[t]
     dvs<- DVS[t]
@@ -491,7 +498,7 @@ test.Evapotranspiration<- function(yamlFile, plt = TRUE, ...){
 #'
 test.PotentialProduction<- function(yamlFile, plt = TRUE, rtn = FALSE, ...){
 
-  yam<- read.wofost.yaml(yamlFile = yamlFile)
+  yam<- read.test.yaml(yamlFile = yamlFile)
 
   # Weather
   w<- yam$weather
@@ -500,6 +507,7 @@ test.PotentialProduction<- function(yamlFile, plt = TRUE, rtn = FALSE, ...){
     w[,i]<- as.numeric(levels(w[,i]))[w[,i]]
   }
   lat<- w$LAT[1]
+  w<- WeatherObject(w)
 
   # parameters
   prmt<- yam[["parameters"]]

@@ -7,6 +7,5 @@
 CropObject(...)
 }
 \description{
-Contains crop parameters, rates and states for the current time step in
-the simulation.
+Contains crop parameters
 }

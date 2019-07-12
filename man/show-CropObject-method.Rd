@@ -3,7 +3,7 @@
 \docType{methods}
 \name{show,CropObject-method}
 \alias{show,CropObject-method}
-\title{S4 Method for generic "show()"}
+\title{S4 Method for generic "show()", CropObject}
 \usage{
 \S4method{show}{CropObject}(object)
 }

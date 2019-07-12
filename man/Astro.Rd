@@ -13,6 +13,18 @@ Astro(w, t, lat)
 
 \item{lat}{Numeric. Latitude}
 }
+\value{
+Named list of length = 8:
+d:      DAYL      Astronomical daylength (base = 0 degrees)     h
+dlp:    DAYLP     Photosynthetic daylength (base =-4 degrees)   h
+sinld:  SINLD     Seasonal offset of sine of solar height       -
+cosld:  COSLD     Amplitude of sine of solar height             -
+dp:     DIFPP     Diffuse irradiation perpendicular to
+                  direction of light                         J/m2*s
+tatm:   ATMTR     Daily atmospheric transmission                -
+sinbm:  DSINBE    Daily total of effective solar height         s
+sod:    ANGOT     Angot radiation at top of atmosphere       J/m2*d
+}
 \description{
 Routine ASTRO calculates day length, some intermediate variables for the
 calculation of the solar elevation, the integral of the solar elevation

@@ -32,7 +32,7 @@ make.afgen<- function(tab){
 #' "25 years of the WOFOST cropping systems model", and returns R list.
 #' @param yamlFile Path to the .yaml file
 #' @export
-read.wofost.yaml<- function(yamlFile){
+read.test.yaml<- function(yamlFile){
 
   # Read .yaml file with "yaml" package
   ryam<- yaml::read_yaml(yamlFile)
@@ -128,23 +128,23 @@ plot.wofost.test <- function(output,control,weather,precision = FALSE,
     par(mfrow=c(2,1))
 
     # Scatterplot of my output and control
-    plot(weather$DAY, output[,i],col=4,
+    plot(weather@DAY, output[,i],col=4,
          main = names(output)[i], ylab = names(output)[i], xlab = 'Date')
-    lines(weather$DAY,control[,i],col = 2)
+    lines(weather@DAY,control[,i],col = 2)
     legend('topright',c('My output','Control'),col=c(4,2),pch = c(1,4),bty='n')
 
     # Difference between my output and control
     dif <- output[,i] - control[,i]
 
     # Plot of distribution of the difference between my output and control
-    plot(weather$DAY, dif, type = 'n',
+    plot(weather@DAY, dif, type = 'n',
          main = 'Precision (my output - control),
          black line should be contained in green area.')
 
     # Area of acceptable results
     if (!isFALSE(precision)){
-      x <- c(weather$DAY[1], weather$DAY[nrow(weather)],
-            weather$DAY[nrow(weather)], weather$DAY[1])
+      x <- c(weather@DAY[1], weather@DAY[length(weather@DAY)],
+            weather@DAY[length(weather@DAY)], weather@DAY[1])
       y <- c(precision[1,i],precision[1,i],-1*precision[1,i],-1*precision[1,i])
       polygon(x, y, col = rgb(0,1,0,.1))
 
@@ -157,7 +157,7 @@ plot.wofost.test <- function(output,control,weather,precision = FALSE,
 
     # Finish plot of distribution of the differences
     abline(h=0,col=4)
-    lines(weather$DAY, dif)
+    lines(weather@DAY, dif)
 
     if(isTRUE(keypress)){
       invisible(readline(prompt="Press [enter] to continue"))
@@ -195,7 +195,7 @@ get.wofost.results <- function(direc,name,variable,section='results'){
   }
 
   file<- paste0(direc,'/',name)
-  yam<- read.wofost.yaml(file)
+  yam<- read.test.yaml(file)
   varb<- yam[[section]][[variable]]
   varb<- as.numeric(levels(varb))[varb]
   return(varb)
@@ -300,8 +300,52 @@ test<- function(component= "All", complete= FALSE){
 
 
 
+#' Download crop parameters
+#'
+#' Downloads crop parameter files from
+#' "https://github.com/ajwdewit/WOFOST_crop_parameters.git"
+#'
+#' @param cropName Character identifying the name of the crop to be
+#' downlowaded. See list on link above.
+#' @param variety Character.The variety name as mentioned in they yaml file
+#' on link above.
+#' @return CropObject
+#'
+#' @export
+#'
+dwn.crop<- function(cropName='potato', variety='Potato_701'){
+
+  request <- httr::GET(paste0(
+    'https://raw.github.com/ajwdewit/WOFOST_crop_parameters/master/',
+    cropName,
+    '.yaml'
+  ))
+
+  httr::stop_for_status(request)
+  handle <- textConnection(httr::content(request, as = 'text'))
+  on.exit(close(handle))
+  y<- yaml::read_yaml(handle)
 
 
+  yv<- y[["CropParameters"]][["Varieties"]][[variety]]
+
+  yv0<- NULL
+  for(i in 1:length(yv)){
+    yv0[[i]]<- yv[[i]][[1]]
+  }
+  names(yv0)<- names(yv)
+
+  for (i in 1:length(yv0)){ # make matrixes out of afgen vectors
+    if(length((yv0[[i]])) > 1){
+      yv0[[i]]<- make.afgen(yv0[[i]])
+    }
+  }
+
+  cr<- CropObject(yv0)
+
+  return(cr)
+
+}
 
 
 

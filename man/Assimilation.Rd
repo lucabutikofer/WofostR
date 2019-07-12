@@ -7,7 +7,42 @@
 Assimilation(AMAXTB, TMPFTB, KDIFTB, EFFTB, TMNFTB, d, lai, sgd, dp, sinbm,
   sinld, cosld, dvs, tday, w, t, tmins)
 }
+\arguments{
+\item{AMAXTB}{Afgen table (inst. gross assimilation rate at light saturation
+vs. development stage)}
+
+\item{TMPFTB}{Afgen table (inst. gross assimilation rate at light saturation
+vs. daytime temperature)}
+
+\item{EFFTB}{Afgen table (light use efficiency vs. daily mean temp),
+crop-specific [kg ha-1 hr-1 j-1 m2 s]}
+
+\item{TMNFTB}{Afgen table (inst. gross assimilation rate at light saturation
+vs. 7 days running minumum temperature)}
+
+\item{d}{From Astro. Astronomic day length}
+
+\item{lai}{Leaf area index of whole canopy}
+
+\item{sgd}{Daily global radiation}
+
+\item{dp}{From Astro. Diffuse radiation perpendicular to the direction light}
+
+\item{sinbm}{From Astro. Integral of effective solar height}
+
+\item{sinld}{From Astro. Seasonal offset of sine of solar height}
+
+\item{cosld}{From Astro. Amplitude of sine of solar height}
+
+\item{dvs}{Development stage}
+
+\item{tday}{Average daytime temperature}
+
+\item{t}{Day in the loop}
+
+\item{lat}{Latitude}
+}
 \description{
-Computes "pgass" (Potential assimilation rate). Calls functions "totass()"
-and "assim()"
+Computes "pgass" (Potential daily CO2 assimilation rate).
+Calls functions "totass()" and "assim()"
 }

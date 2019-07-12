@@ -18,6 +18,5 @@ Spitters et al. (1988). The input variables SINB, PARDIR
 and PARDIF are calculated in routine TOTASS.
 }
 \details{
-Subroutines and functions called: none.
-Called by routine TOTASS.
+Called by totas
 }

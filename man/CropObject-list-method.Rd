@@ -3,10 +3,10 @@
 \docType{methods}
 \name{CropObject,list-method}
 \alias{CropObject,list-method}
-\title{S4 Method for generic "CropObject()"}
+\title{S4 Method for generic "CropObject()", list}
 \usage{
 \S4method{CropObject}{list}(...)
 }
 \description{
-S4 Method for generic "CropObject()"
+S4 Method for generic "CropObject()", list
 }
