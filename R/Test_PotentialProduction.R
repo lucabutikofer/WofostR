@@ -1,9 +1,4 @@
 
-#' Wofost Potential Production
-#'
-#' Computes potential production as per Wofost crop growth algorithm
-#' @export
-#'
 Potential_production<- function(
                                 crop, w , lat, ext,
                                 waterlimited= F

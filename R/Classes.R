@@ -1,11 +1,160 @@
 
-# CropObject class definition #####
 
+# INTERNAL, UNDOCUMENTED METHODS AND CLASSES ####
+
+# TestCropObject class definition #####
+# S4 Class "TestCropObject"
+#
+# Contains crop parameters
+#
+# @export TestCropObject
+#
+TestCropObject <- setClass('TestCropObject', slots = c(
+
+  'AMAXTB',
+  'CFET',
+  'CRAIRC',
+  'CROP_START_TYPE',
+  'CVL',
+  'CVO',
+  'CVR',
+  'CVS',
+  'DEPNR',
+  'DLC',
+  'DLO',
+  'DTSMTB',
+  'DVSEND',
+  'DVSI',
+  'EFFTB',
+  'FLTB',
+  'FOTB',
+  'FRTB',
+  'FSTB',
+  'IAIRDU',
+  'IDSL',
+  'IOX',
+  'KDIFTB',
+  'LAIEM',
+  'PERDL',
+  'Q10',
+  'RDI',
+  'RDMCR',
+  'RDMSOL',
+  'RDRRTB',
+  'RDRSTB',
+  'RFSETB',
+  'RGRLAI',
+  'RML',
+  'RMO',
+  'RMR',
+  'RMS',
+  'RRI',
+  'SLATB',
+  'SMFCF',
+  'SMW',
+  'SPA',
+  'SPAN',
+  'SSATB',
+  'TBASE',
+  'TBASEM',
+  'TDWI',
+  'TEFFMX',
+  'TMNFTB',
+  'TMPFTB',
+  'TSUM1',
+  'TSUM2',
+  'TSUMEM',
+  'VERNRTB',
+  'SM0',
+  'VERNDVS',
+  'VERNBASE',
+  'VERNSAT'
+
+)
+)
+
+
+# TestCropObject() method for "list" class ####
+# S4 Method for generic "TestCropObject()", list
+#
+# @export
+#
+setMethod(f='TestCropObject', signature='list',
+          definition= function(...){
+            TestCropObject(
+
+              AMAXTB = ...$AMAXTB,
+              CFET = ...$CFET,
+              CRAIRC = ...$CRAIRC,
+              CROP_START_TYPE = ...$CROP_START_TYPE,
+              CVL = ...$CVL,
+              CVO = ...$CVO,
+              CVR = ...$CVR,
+              CVS = ...$CVS,
+              DEPNR = ...$DEPNR,
+              DLC = ...$DLC,
+              DLO = ...$DLO,
+              DTSMTB = ...$DTSMTB,
+              DVSEND = ...$DVSEND,
+              DVSI = ...$DVSI,
+              EFFTB = ...$EFFTB,
+              FLTB = ...$FLTB,
+              FOTB = ...$FOTB,
+              FRTB = ...$FRTB,
+              FSTB = ...$FSTB,
+              IAIRDU = ...$IAIRDU,
+              IDSL = ...$IDSL,
+              IOX = ...$IOX,
+              KDIFTB = ...$KDIFTB,
+              LAIEM = ...$LAIEM,
+              PERDL = ...$PERDL,
+              Q10 = ...$Q10,
+              RDI = ...$RDI,
+              RDMCR = ...$RDMCR,
+              RDMSOL = ...$RDMSOL,
+              RDRRTB = ...$RDRRTB,
+              RDRSTB = ...$RDRSTB,
+              RFSETB = ...$RFSETB,
+              RGRLAI = ...$RGRLAI,
+              RML = ...$RML,
+              RMO = ...$RMO,
+              RMR = ...$RMR,
+              RMS = ...$RMS,
+              RRI = ...$RRI,
+              SLATB = ...$SLATB,
+              SMFCF = ...$SMFCF,
+              SMW = ...$SMW,
+              SPA = ...$SPA,
+              SPAN = ...$SPAN,
+              SSATB = ...$SSATB,
+              TBASE = ...$TBASE,
+              TBASEM = ...$TBASEM,
+              TDWI = ...$TDWI,
+              TEFFMX = ...$TEFFMX,
+              TMNFTB = ...$TMNFTB,
+              TMPFTB = ...$TMPFTB,
+              TSUM1 = ...$TSUM1,
+              TSUM2 = ...$TSUM2,
+              TSUMEM = ...$TSUMEM,
+              VERNRTB = ...$VERNRTB,
+              SM0 = ...$SM0,
+              VERNDVS = ...$VERNDVS,
+              VERNBASE = ...$VERNBASE,
+              VERNSAT = ...$VERNSAT
+
+            )
+          }
+)
+
+
+# EXPORTED, DOCUMENTED METHODS AND CLASSES ####
+
+# CropObject class definition #####
 #' S4 Class "CropObject"
 #'
 #' Contains crop parameters
 #'
-#' @importFrom methods new
+#' @importFrom methods new slot slotNames
 #' @export CropObject
 #'
 CropObject <- setClass('CropObject', slots = c(
@@ -105,8 +254,7 @@ CropObject <- setClass('CropObject', slots = c(
 )
 
 
-# "show()" method for CropObject class ####
-
+# show() method for CropObject class ####
 #' S4 Method for generic "show()", CropObject
 #'
 #' Prints a summary of the simulation object when typed or when
@@ -128,8 +276,7 @@ setMethod('show', 'CropObject',
           )
 
 
-# "CropObject()" method for list class ####
-
+# CropObject() method for "list" class ####
 #' S4 Method for generic "CropObject()", list
 #'
 #' @export
@@ -235,12 +382,11 @@ setMethod(f='CropObject', signature='list',
 
 
 # WeatehrObject class definition ####
-
 #' S4 Class "WeatherObject"
 #'
 #' Contains meteorological driving variables.
 #'
-#' @importFrom methods new
+#' @importFrom methods new slot slotNames
 #' @export WeatherObject
 #'
 WeatherObject <- setClass('WeatherObject', slots = c(
@@ -264,8 +410,32 @@ WeatherObject <- setClass('WeatherObject', slots = c(
 )
 
 
-# "WeatherObject()" method for list class ####
+# show() method for WeatherObject class ####
+#' S4 Method for generic "show()", WeatherObject
+#'
+#' Prints a summary of the weather object when typed or when
+#' "show(object_name)" is called
+#' @export
+#'
+setMethod('show', 'WeatherObject',
+          function(object){
+            sl<-NULL # slot length
+            for(i in 1:length(slotNames(object))){
+              sl[i]<- length(slot(object,slotNames(object)[i]))
+            }
 
+            out<- cbind('VARIABLES'=paste0('@',slotNames(object)),
+                        'LENGTH'=sl)
+            rownames(out)<- 1:length(slotNames(object))
+
+            cat('\n', 'WofostR Weather Object:', '\n', '\n')
+            print(out,quote=F)
+            cat('\n')
+          }
+)
+
+
+# WeatherObject() method for list class ####
 #' S4 Method for generic "WeatherObject()", list
 #'
 #' @export
@@ -291,31 +461,5 @@ setMethod(f='WeatherObject', signature='list',
               WIND = ...$WIND
 
             )
-          }
-)
-
-
-# "show()" method for WeatherObject class ####
-
-#' S4 Method for generic "show()", WeatherObject
-#'
-#' Prints a summary of the weather object when typed or when
-#' "show(object_name)" is called
-#' @export
-#'
-setMethod('show', 'WeatherObject',
-          function(object){
-            sl<-NULL # slot length
-            for(i in 1:length(slotNames(object))){
-              sl[i]<- length(slot(object,slotNames(object)[i]))
-            }
-
-            out<- cbind('VARIABLES'=paste0('@',slotNames(object)),
-                        'LENGTH'=sl)
-            rownames(out)<- 1:length(slotNames(object))
-
-            cat('\n', 'WofostR Weather Object:', '\n', '\n')
-            print(out,quote=F)
-            cat('\n')
           }
 )

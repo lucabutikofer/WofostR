@@ -1,7 +1,7 @@
 
-#' Astro
+#' Astronomical computations routine
 #'
-#' Routine ASTRO calculates day length, some intermediate variables for the
+#' Routine Astro calculates day length, some intermediate variables for the
 #' calculation of the solar elevation, the integral of the solar elevation
 #' over a day and the fraction of diffuse radiation.
 #'
@@ -93,7 +93,7 @@ Astro<- function(w, t, lat){
 }
 
 
-#' Assimilation routine as in PCSE/WOFOST
+#' CO2 assimilation routine
 #'
 #' Computes "pgass" (Potential daily CO2 assimilation rate).
 #' Calls functions "totass()" and "assim()"
@@ -152,7 +152,7 @@ Assimilation<- function(
 }
 
 
-#' Function totass as in PCSE/WOFOST (Python version)
+#' Assimilation of CO2 throughout the day
 #'
 #' This routine calculates the daily total gross CO2 assimilation by
 #' performing a Gaussian integration over time. At three different times of
@@ -160,7 +160,7 @@ Assimilation<- function(
 #' canopy assimilation, whereafter integration takes place. More information
 #' on this routine is given by Spitters et al. (1988).
 #'
-#' Called by Assimilation. Calls Assim.
+#' Called by Assimilation(). Calls Assim().
 #'
 #' @export
 #'
@@ -192,19 +192,19 @@ totass<- function(d, amax, eff, lai, kdif, sgd,
 }
 
 
-#' Function assim
+#' Assimilation of CO2 throughout the canopy
 #'
 #' This routine calculates the gross CO2 assimilation rate of
 #' the whole crop, FGROS, by performing a Gaussian integration
 #' over depth in the crop canopy. At three different depths in
-#' the canopy, i.e. for different values of LAI, the
+#' the canopy, (i.e. for different values of LAI) the
 #' assimilation rate is computed for given fluxes of photosynthe-
 #' tically active radiation, whereafter integration over depth
 #' takes place. More information on this routine is given by
 #' Spitters et al. (1988). The input variables SINB, PARDIR
 #' and PARDIF are calculated in routine TOTASS.
 #'
-#' Called by totas
+#' Called by totas()
 #'
 #' @export
 #'
@@ -265,7 +265,7 @@ assim<- function(amax,eff,lai,kdif,sinb,pardir,pardif){
 }
 
 
-#' Evapotranspiration
+#' Evapotranspiration routine
 #'
 #' Routine Evapotranspiration computes evapotranspiration rates from crop
 #' and soil input parameters

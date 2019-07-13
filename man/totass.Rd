@@ -2,7 +2,7 @@
 % Please edit documentation in R/Routines.R
 \name{totass}
 \alias{totass}
-\title{Function totass as in PCSE/WOFOST (Python version)}
+\title{Assimilation of CO2 throughout the day}
 \usage{
 totass(d, amax, eff, lai, kdif, sgd, dp, sinbm, sinld, cosld)
 }
@@ -14,5 +14,5 @@ canopy assimilation, whereafter integration takes place. More information
 on this routine is given by Spitters et al. (1988).
 }
 \details{
-Called by Assimilation. Calls Assim.
+Called by Assimilation(). Calls Assim().
 }

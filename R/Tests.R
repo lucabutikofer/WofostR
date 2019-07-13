@@ -1,20 +1,19 @@
 
 
 
-#' Astro routine testing
-#'
-#' Tests the Astro routine with the testing data of
-#' De Wit et al. 2018
-#'
-#' @param yamlFile Path to yaml test file
-#' @param plt Logical. If TRUE prints plots of results with plot.wofost.test
-#' @param rtn Logical. If TRUE returns a list (see below)
-#' @param ... Arguments passed to function plot.wofost.test
-#' @return List of 2 elements. 'output': the variables values produced by the
-#'         script 'control': the variables values saved in the yaml file.
-#' @export
-#'
 test.Astro<- function(yamlFile, plt = TRUE, rtn = FALSE, ...){
+
+  # Internal. Astro routine testing
+  #
+  # Tests the Astro routine with the testing data of
+  # De Wit et al. 2018
+  #
+  # @param yamlFile Path to yaml test file
+  # @param plt Logical. If TRUE prints plots of results with plot.wofost.test
+  # @param rtn Logical. If TRUE returns a list (see below)
+  # @param ... Arguments passed to function plot.wofost.test
+  # @return List of 2 elements. 'output': the variables values produced by the
+  #         script 'control': the variables values saved in the yaml file.
 
   yam<- read.test.yaml(yamlFile = yamlFile)
 
@@ -42,19 +41,18 @@ test.Astro<- function(yamlFile, plt = TRUE, rtn = FALSE, ...){
 
 }
 
-#' Assimilation routine testing
-#'
-#' Tests the Assimilation routine with the testing data of
-#' De Wit et al. 2018
-#'
-#' @param yamlFile Path to yaml test file
-#' @param plt Logical. If TRUE prints plots of results with plot.wofost.test
-#' @param ... Arguments passed to function plot.wofost.test
-#' @return List of 2 elements. 'output': the variables values produced by the
-#'         script 'control': the variables values saved in the yaml file.
-#' @export
-#'
 test.Assimilation<- function(yamlFile, plt = TRUE, rtn = FALSE, ...){
+
+  # Internal. Assimilation routine testing
+  #
+  # Tests the Assimilation routine with the testing data of
+  # De Wit et al. 2018
+  #
+  # @param yamlFile Path to yaml test file
+  # @param plt Logical. If TRUE prints plots of results with plot.wofost.test
+  # @param ... Arguments passed to function plot.wofost.test
+  # @return List of 2 elements. 'output': the variables values produced by the
+  #         script 'control': the variables values saved in the yaml file.
 
   yam<- read.test.yaml(yamlFile = yamlFile)
 
@@ -90,7 +88,8 @@ test.Assimilation<- function(yamlFile, plt = TRUE, rtn = FALSE, ...){
     sgd<- w@IRRAD[t]
 
     # average temperature and average daytemperature
-    if (t <= length(w@DAY)){ # necessary to have model to run till last row of test.
+    if (t <= length(w@DAY)){ # necessary to have model to run till
+                             # last row of test.
       temp<- (w@TMIN[t] + w@TMAX[t])/2
       tday<- (w@TMAX[t] + temp)/2
     }
@@ -103,7 +102,8 @@ test.Assimilation<- function(yamlFile, plt = TRUE, rtn = FALSE, ...){
     if (dvs >= 0){
 
       # Astro
-      if (t <= length(w@DAY)){ # necessary to have model running last row of test.
+      if (t <= length(w@DAY)){ # necessary to have model running
+                               # last row of test.
         astro<- Astro(w,t,lat)
       }
       # for (v in 1:length(astro)){assign(names(astro)[v], astro[[v]])}
@@ -135,19 +135,18 @@ test.Assimilation<- function(yamlFile, plt = TRUE, rtn = FALSE, ...){
 }
 
 
-#' Respiration routine testing
-#'
-#' Tests the Respiration routine with the testing data of
-#' De Wit et al. 2018
-#'
-#' @param yamlFile Path to yaml test file
-#' @param plt Logical. If TRUE prints plots of results with plot.wofost.test
-#' @param ... Arguments passed to function plot.wofost.test
-#' @return List of 2 elements. 'output': the variables values produced by the
-#'         script 'control': the variables values saved in the yaml file.
-#' @export
-#'
 test.Respiration<- function(yamlFile, plt = TRUE, ...){
+
+  # Internal. Respiration routine testing
+  #
+  # Tests the Respiration routine with the testing data of
+  # De Wit et al. 2018
+  #
+  # @param yamlFile Path to yaml test file
+  # @param plt Logical. If TRUE prints plots of results with plot.wofost.test
+  # @param ... Arguments passed to function plot.wofost.test
+  # @return List of 2 elements. 'output': the variables values produced by the
+  #         script 'control': the variables values saved in the yaml file.
 
   yam<- read.test.yaml(yamlFile = yamlFile)
 
@@ -184,7 +183,8 @@ test.Respiration<- function(yamlFile, plt = TRUE, ...){
     wrt<- WRT[t]
 
     # average temperature and average daytemperature
-    if (t <= length(w@DAY)){ # necessary to have model to run till last row of test.
+    if (t <= length(w@DAY)){ # necessary to have model to run till
+                             # last row of test.
       temp<- (w@TMIN[t] + w@TMAX[t])/2
     }
 
@@ -221,19 +221,19 @@ test.Respiration<- function(yamlFile, plt = TRUE, ...){
 
 }
 
-#' Partitioning routine testing
-#'
-#' Tests the Partitioning routine with the testing data of
-#' De Wit et al. 2018
-#'
-#' @param yamlFile Path to yaml test file
-#' @param plt Logical. If TRUE prints plots of results with plot.wofost.test
-#' @param ... Arguments passed to function plot.wofost.test
-#' @return List of 2 elements. 'output': the variables values produced by the
-#'         script 'control': the variables values saved in the yaml file.
-#' @export
-#'
+
 test.Partitioning<- function(yamlFile, plt = TRUE, ...){
+
+  # Internal. Partitioning routine testing
+  #
+  # Tests the Partitioning routine with the testing data of
+  # De Wit et al. 2018
+  #
+  # @param yamlFile Path to yaml test file
+  # @param plt Logical. If TRUE prints plots of results with plot.wofost.test
+  # @param ... Arguments passed to function plot.wofost.test
+  # @return List of 2 elements. 'output': the variables values produced by the
+  #         script 'control': the variables values saved in the yaml file.
 
   yam<- read.test.yaml(yamlFile = yamlFile)
 
@@ -288,19 +288,19 @@ test.Partitioning<- function(yamlFile, plt = TRUE, ...){
 
 }
 
-#' Root Dynamics routine testing
-#'
-#' Tests the Root Dynamics routine with the testing data of
-#' De Wit et al. 2018
-#'
-#' @param yamlFile Path to yaml test file
-#' @param plt Logical. If TRUE prints plots of results with plot.wofost.test
-#' @param ... Arguments passed to function plot.wofost.test
-#' @return List of 2 elements. 'output': the variables values produced by the
-#'         script 'control': the variables values saved in the yaml file.
-#' @export
-#'
+
 test.RootDynamics<- function(yamlFile, plt = TRUE, ...){
+
+  # Internal. Root Dynamics routine testing
+  #
+  # Tests the Root Dynamics routine with the testing data of
+  # De Wit et al. 2018
+  #
+  # @param yamlFile Path to yaml test file
+  # @param plt Logical. If TRUE prints plots of results with plot.wofost.test
+  # @param ... Arguments passed to function plot.wofost.test
+  # @return List of 2 elements. 'output': the variables values produced by the
+  #         script 'control': the variables values saved in the yaml file.
 
   yam<- read.test.yaml(yamlFile = yamlFile)
 
@@ -349,19 +349,18 @@ test.RootDynamics<- function(yamlFile, plt = TRUE, ...){
 
 }
 
-#' Leaf Dynamics routine testing
-#'
-#' Tests the Leaf Dynamics routine with the testing data of
-#' De Wit et al. 2018
-#'
-#' @param yamlFile Path to yaml test file
-#' @param plt Logical. If TRUE prints plots of results with plot.wofost.test
-#' @param ... Arguments passed to function plot.wofost.test
-#' @return List of 2 elements. 'output': the variables values produced by the
-#'         script 'control': the variables values saved in the yaml file.
-#' @export
-#'
 test.LeafDynamics<- function(yamlFile, plt = TRUE, rtn = FALSE,...){
+
+  # Internal. Leaf Dynamics routine testing
+  #
+  # Tests the Leaf Dynamics routine with the testing data of
+  # De Wit et al. 2018
+  #
+  # @param yamlFile Path to yaml test file
+  # @param plt Logical. If TRUE prints plots of results with plot.wofost.test
+  # @param ... Arguments passed to function plot.wofost.test
+  # @return List of 2 elements. 'output': the variables values produced by the
+  #         script 'control': the variables values saved in the yaml file.
 
   yam<- read.test.yaml(yamlFile = yamlFile)
 
@@ -409,19 +408,19 @@ test.LeafDynamics<- function(yamlFile, plt = TRUE, rtn = FALSE,...){
 
 }
 
-#' Evapotranspiration routine testing
-#'
-#' Tests the Evapotranspiration routine with the testing data of
-#' De Wit et al. 2018
-#'
-#' @param yamlFile Path to yaml test file
-#' @param plt Logical. If TRUE prints plots of results with plot.wofost.test
-#' @param ... Arguments passed to function plot.wofost.test
-#' @return List of 2 elements. 'output': the variables values produced by the
-#'         script 'control': the variables values saved in the yaml file.
-#' @export
-#'
+
 test.Evapotranspiration<- function(yamlFile, plt = TRUE, ...){
+
+  # Internal. Evapotranspiration routine testing
+  #
+  # Tests the Evapotranspiration routine with the testing data of
+  # De Wit et al. 2018
+  #
+  # @param yamlFile Path to yaml test file
+  # @param plt Logical. If TRUE prints plots of results with plot.wofost.test
+  # @param ... Arguments passed to function plot.wofost.test
+  # @return List of 2 elements. 'output': the variables values produced by the
+  #         script 'control': the variables values saved in the yaml file.
 
   yam<- read.test.yaml(yamlFile = yamlFile)
 
@@ -483,20 +482,19 @@ test.Evapotranspiration<- function(yamlFile, plt = TRUE, ...){
 }
 
 
-#' Potential Production routine testing
-#'
-#' Tests the Potential Production routine with the testing data of
-#' De Wit et al. 2018
-#'
-#' @param yamlFile Path to yaml test file
-#' @param plt Logical. If TRUE prints plots of results with plot.wofost.test
-#' @param rtn Logical. If TRUE returns a list (see below)
-#' @param ... Arguments passed to function plot.wofost.test
-#' @return List of 2 elements. 'output': the variables values produced by the
-#'         script 'control': the variables values saved in the yaml file.
-#' @export
-#'
 test.PotentialProduction<- function(yamlFile, plt = TRUE, rtn = FALSE, ...){
+
+  # Internal. Potential Production routine testing
+  #
+  # Tests the Potential Production routine with the testing data of
+  # De Wit et al. 2018
+  #
+  # @param yamlFile Path to yaml test file
+  # @param plt Logical. If TRUE prints plots of results with plot.wofost.test
+  # @param rtn Logical. If TRUE returns a list (see below)
+  # @param ... Arguments passed to function plot.wofost.test
+  # @return List of 2 elements. 'output': the variables values produced by the
+  #         script 'control': the variables values saved in the yaml file.
 
   yam<- read.test.yaml(yamlFile = yamlFile)
 
@@ -511,7 +509,7 @@ test.PotentialProduction<- function(yamlFile, plt = TRUE, rtn = FALSE, ...){
 
   # parameters
   prmt<- yam[["parameters"]]
-  simo<- CropObject(prmt)
+  simo<- TestCropObject(prmt)
 
   # Externals
   ext<- yam$externals

@@ -1,3 +1,117 @@
+# INTERNAL, UNDOCUMENTED FUNCTIONS ####
+
+get.wofost.results <- function(direc,name,variable,section='results'){
+
+  # Extract test file variables
+  #
+  # Extracts any variable from yaml test files.
+  #
+  # @param direc Directory where the relevant yaml file is saved
+  # @param name Name of test file (including extension)
+  # @param variable Name of variable to retrieve
+  # @param section Section of yaml file where variable is stored
+  #                 can be either 'results' (default) or 'externals'.
+  #
+
+  if(section == 'externals'){
+    section<- 2
+  } else if (section == 'results'){
+    section<- 3
+  }
+
+  file<- paste0(direc,'/',name)
+  yam<- read.test.yaml(file)
+  varb<- yam[[section]][[variable]]
+  varb<- as.numeric(levels(varb))[varb]
+  return(varb)
+}
+
+
+#' @importFrom grDevices rgb
+#' @importFrom graphics abline legend lines par plot polygon
+#'
+plot.wofost.test <- function(output,control,weather,precision = FALSE,
+                             keypress = TRUE){
+  # Plot Wofost test results
+  #
+  # Plots graphs of outputs of test trials
+  #
+  # @param output Dataframe of variables outputted by the function wofots.test.
+  #               Column order must be the same as in "control".
+  # @param control Control section of yaml test file as returned by function
+  #                make.afgen
+  # @param weather wather section of yaml test file as returned by function
+  #                make.afgen
+  # @param precision Precision section of yaml test file as returned by function
+  #                make.afgen
+  # @param keypress Logical. If TRUE, plots one graph at the time after a key is
+  #                pressed. if FALSE, returns them all together, par(mfrow())
+  #                can be used to place all plots in the same image.
+  #
+  #
+  # @return dataframe of variables outputted by the code to test. Column
+  #         order must be the same as in "control".
+
+
+  if(names(control)[1] == "DAY"){control <- control[2:ncol(control)]}
+
+  unacceptable <- NULL
+
+  for(i in 1:ncol(control)){
+
+    par(mfrow=c(2,1))
+
+    # Scatterplot of my output and control
+    plot(weather@DAY, output[,i],col=4,
+         main = names(output)[i], ylab = names(output)[i], xlab = 'Date')
+    lines(weather@DAY,control[,i],col = 2)
+    legend('topright',c('My output','Control'),col=c(4,2),pch = c(1,4),bty='n')
+
+    # Difference between my output and control
+    dif <- output[,i] - control[,i]
+
+    # Plot of distribution of the difference between my output and control
+    plot(weather@DAY, dif, type = 'n',
+         main = 'Precision (my output - control),
+         black line should be contained in green area.')
+
+    # Area of acceptable results
+    if (!isFALSE(precision)){
+      x <- c(weather@DAY[1], weather@DAY[length(weather@DAY)],
+             weather@DAY[length(weather@DAY)], weather@DAY[1])
+      y <- c(precision[1,i],precision[1,i],-1*precision[1,i],-1*precision[1,i])
+      polygon(x, y, col = rgb(0,1,0,.1))
+
+      # Number of output estimation exceeding acceptable imprecision
+      wrong<- rep(0,length(dif))
+      wrong[(abs(output[,i] - control[,i]) - precision[1,i]) > precision[1,i]] <-
+        1
+      unacceptable[[i]] <- sum(wrong)
+    }
+
+    # Finish plot of distribution of the differences
+    abline(h=0,col=4)
+    lines(weather@DAY, dif)
+
+    if(isTRUE(keypress)){
+      invisible(readline(prompt="Press [enter] to continue"))
+    }
+  }
+
+  # Print a message saying which variables are rightly estimated
+  # and which are wrong.
+  if (!isFALSE(precision)){
+    unacceptable <- unlist(unacceptable)
+    passed <- NULL
+    passed[unacceptable > 0]<- 'WRONG'
+    passed[unacceptable <= 0]<- 'RIGHT'
+    print(rbind(variables=names(control),passed))
+  }
+}
+
+
+# EXPORTED, DOCUMENTED FUCTIONS ####
+
 #' Afgen vector to table
 #'
 #' Renders afgen tables expressed as "vectors" into a "matrix" format.
@@ -30,12 +144,19 @@ make.afgen<- function(tab){
 #'
 #' Reads .yaml test files published in De Wit et al. 2019,
 #' "25 years of the WOFOST cropping systems model", and returns R list.
-#' @param yamlFile Path to the .yaml file
+#' @param yamlFile Path to the .yaml file or list object returned by function
+#' yaml::read_yaml.
+#' @return List version of yaml file.
 #' @export
+#'
 read.test.yaml<- function(yamlFile){
 
   # Read .yaml file with "yaml" package
-  ryam<- yaml::read_yaml(yamlFile)
+  if(class(yamlFile) == 'character'){
+    ryam<- yaml::read_yaml(yamlFile)
+  } else if (class(yamlFile) == 'list'){
+    ryam<- yamlFile
+  }
 
   # External states
   ext<- ryam[["ExternalStates"]]
@@ -93,114 +214,6 @@ read.test.yaml<- function(yamlFile){
 }
 
 
-#' Plot Wofost test results
-#'
-#' Plots graphs of outputs of test trials
-#'
-#' @param output Dataframe of variables outputted by the function wofots.test.
-#'               Column order must be the same as in "control".
-#' @param control Control section of yaml test file as returned by function
-#'                make.afgen
-#' @param weather wather section of yaml test file as returned by function
-#'                make.afgen
-#' @param precision Precision section of yaml test file as returned by function
-#'                make.afgen
-#'@param keypress Logical. If TRUE, plots one graph at the time after a key is
-#'                pressed. if FALSE, returns them all together, par(mfrow())
-#'                can be used to place all plots in the same image.
-#'
-#' @importFrom grDevices rgb
-#' @importFrom graphics abline legend lines par plot polygon
-#'
-plot.wofost.test <- function(output,control,weather,precision = FALSE,
-                             keypress = TRUE){
-
-  # Output: dataframe of variables outputted by the code to test. Column
-  #         order must be the same as in "control".
-
-
-  if(names(control)[1] == "DAY"){control <- control[2:ncol(control)]}
-
-  unacceptable <- NULL
-
-  for(i in 1:ncol(control)){
-
-    par(mfrow=c(2,1))
-
-    # Scatterplot of my output and control
-    plot(weather@DAY, output[,i],col=4,
-         main = names(output)[i], ylab = names(output)[i], xlab = 'Date')
-    lines(weather@DAY,control[,i],col = 2)
-    legend('topright',c('My output','Control'),col=c(4,2),pch = c(1,4),bty='n')
-
-    # Difference between my output and control
-    dif <- output[,i] - control[,i]
-
-    # Plot of distribution of the difference between my output and control
-    plot(weather@DAY, dif, type = 'n',
-         main = 'Precision (my output - control),
-         black line should be contained in green area.')
-
-    # Area of acceptable results
-    if (!isFALSE(precision)){
-      x <- c(weather@DAY[1], weather@DAY[length(weather@DAY)],
-            weather@DAY[length(weather@DAY)], weather@DAY[1])
-      y <- c(precision[1,i],precision[1,i],-1*precision[1,i],-1*precision[1,i])
-      polygon(x, y, col = rgb(0,1,0,.1))
-
-      # Number of output estimation exceeding acceptable imprecision
-      wrong<- rep(0,length(dif))
-      wrong[(abs(output[,i] - control[,i]) - precision[1,i]) > precision[1,i]] <-
-        1
-      unacceptable[[i]] <- sum(wrong)
-    }
-
-    # Finish plot of distribution of the differences
-    abline(h=0,col=4)
-    lines(weather@DAY, dif)
-
-    if(isTRUE(keypress)){
-      invisible(readline(prompt="Press [enter] to continue"))
-    }
-  }
-
-  # Print a message saying which variables are rightly estimated
-  # and which are wrong.
-  if (!isFALSE(precision)){
-    unacceptable <- unlist(unacceptable)
-    passed <- NULL
-    passed[unacceptable > 0]<- 'WRONG'
-    passed[unacceptable <= 0]<- 'RIGHT'
-    print(rbind(variables=names(control),passed))
-  }
-}
-
-
-#' Extract test file variables
-#'
-#' Extracts any variable from yaml test files.
-#'
-#' @param direc Directory where the relevant yaml file is saved
-#' @param name Name of test file (including extension)
-#' @param variable Name of variable to retrieve
-#' @param section Section of yaml file where variable is stored
-#                 can be either 'results' (default) or 'externals'.
-
-get.wofost.results <- function(direc,name,variable,section='results'){
-
-  if(section == 'externals'){
-    section<- 2
-  } else if (section == 'results'){
-    section<- 3
-  }
-
-  file<- paste0(direc,'/',name)
-  yam<- read.test.yaml(file)
-  varb<- yam[[section]][[variable]]
-  varb<- as.numeric(levels(varb))[varb]
-  return(varb)
-}
-
 #' Tests afgen() function
 #'
 #' Performs a graphical test to check that afgen() function performs
@@ -253,7 +266,10 @@ test<- function(component= "All", complete= FALSE){
     testall<- FALSE
   } else {testall<- TRUE}
 
-  fls<- list.files('../WofostR/inst/extdata/')
+  # Retrieve list of test files names saved in "R/sysdata.rda"
+  fls<- WofostR:::testFilesNames # probably would work without
+                                 # "WofostR:::"
+
   spl<- strsplit(fls,'_')
   gr<- NULL # groups of files pertaining the same tests
   for (i in 1:length(spl)){
@@ -267,7 +283,16 @@ test<- function(component= "All", complete= FALSE){
     if (isFALSE(complete)){xfls<- xfls[sample(1:length(xfls),3)] }
     for (i in 1:length(xfls)){
       print(i)
-      yamlFile=paste0('../WofostR/inst/extdata/',xfls[i])
+
+      request <- httr::GET(paste0(
+        'https://raw.github.com/lucabutikofer/WofostR_testData/master/',
+        xfls[i]
+        ))
+      httr::stop_for_status(request)
+      handle <- textConnection(httr::content(request, as = 'text'))
+      yamlFile<- yaml::read_yaml(handle)
+      close(handle)
+
       test.PotentialProduction(yamlFile, keypress=F)
     }
   }
@@ -279,7 +304,16 @@ test<- function(component= "All", complete= FALSE){
     if (isFALSE(complete)){xfls<- xfls[sample(1:length(xfls),3)] }
     for (i in 1:length(xfls)){
       print(i)
-      yamlFile=paste0('../WofostR/inst/extdata/',xfls[i])
+
+      request <- httr::GET(paste0(
+        'https://raw.github.com/lucabutikofer/WofostR_testData/master/',
+        xfls[i]
+      ))
+      httr::stop_for_status(request)
+      handle <- textConnection(httr::content(request, as = 'text'))
+      yamlFile<- yaml::read_yaml(handle)
+      close(handle)
+
       test.LeafDynamics(yamlFile, keypress=F)
     }
   }
@@ -291,7 +325,16 @@ test<- function(component= "All", complete= FALSE){
     if (isFALSE(complete)){xfls<- xfls[sample(1:length(xfls),3)] }
     for (i in 1:length(xfls)){
       print(i)
-      yamlFile=paste0('../WofostR/inst/extdata/',xfls[i])
+
+      request <- httr::GET(paste0(
+        'https://raw.github.com/lucabutikofer/WofostR_testData/master/',
+        xfls[i]
+      ))
+      httr::stop_for_status(request)
+      handle <- textConnection(httr::content(request, as = 'text'))
+      yamlFile<- yaml::read_yaml(handle)
+      close(handle)
+
       test.Assimilation(yamlFile, keypress=F)
     }
   }
@@ -310,7 +353,6 @@ test<- function(component= "All", complete= FALSE){
 #' @param variety Character.The variety name as mentioned in they yaml file
 #' on link above.
 #' @return CropObject
-#'
 #' @export
 #'
 dwn.crop<- function(cropName='potato', variety='Potato_701'){
@@ -320,7 +362,6 @@ dwn.crop<- function(cropName='potato', variety='Potato_701'){
     cropName,
     '.yaml'
   ))
-
   httr::stop_for_status(request)
   handle <- textConnection(httr::content(request, as = 'text'))
   on.exit(close(handle))

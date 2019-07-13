@@ -2,7 +2,7 @@
 % Please edit documentation in R/Routines.R
 \name{Assimilation}
 \alias{Assimilation}
-\title{Assimilation routine as in PCSE/WOFOST}
+\title{CO2 assimilation routine}
 \usage{
 Assimilation(AMAXTB, TMPFTB, KDIFTB, EFFTB, TMNFTB, d, lai, sgd, dp, sinbm,
   sinld, cosld, dvs, tday, w, t, tmins)

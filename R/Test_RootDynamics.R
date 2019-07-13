@@ -1,11 +1,4 @@
-#' Roots Dynamics for testing
-#'
-#' Function that performs the root-dynamics-relevant code in isolation.
-#' Used for testing the roots dynamics routine with the testing data of
-#' De Wit et al. 2018
-#'
-#'
-#'
+
 RootDynamics<- function(RDI,RDMCR,RDMSOL,RDRRTB,RRI,TDWI,
                         w,ext
                         ){

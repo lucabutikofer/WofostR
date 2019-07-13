@@ -2,7 +2,7 @@
 % Please edit documentation in R/Routines.R
 \name{assim}
 \alias{assim}
-\title{Function assim}
+\title{Assimilation of CO2 throughout the canopy}
 \usage{
 assim(amax, eff, lai, kdif, sinb, pardir, pardif)
 }
@@ -10,7 +10,7 @@ assim(amax, eff, lai, kdif, sinb, pardir, pardif)
 This routine calculates the gross CO2 assimilation rate of
 the whole crop, FGROS, by performing a Gaussian integration
 over depth in the crop canopy. At three different depths in
-the canopy, i.e. for different values of LAI, the
+the canopy, (i.e. for different values of LAI) the
 assimilation rate is computed for given fluxes of photosynthe-
 tically active radiation, whereafter integration over depth
 takes place. More information on this routine is given by
@@ -18,5 +18,5 @@ Spitters et al. (1988). The input variables SINB, PARDIR
 and PARDIF are calculated in routine TOTASS.
 }
 \details{
-Called by totas
+Called by totas()
 }

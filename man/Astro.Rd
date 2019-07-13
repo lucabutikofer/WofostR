@@ -2,7 +2,7 @@
 % Please edit documentation in R/Routines.R
 \name{Astro}
 \alias{Astro}
-\title{Astro}
+\title{Astronomical computations routine}
 \usage{
 Astro(w, t, lat)
 }
@@ -26,7 +26,7 @@ sinbm:  DSINBE    Daily total of effective solar height         s
 sod:    ANGOT     Angot radiation at top of atmosphere       J/m2*d
 }
 \description{
-Routine ASTRO calculates day length, some intermediate variables for the
+Routine Astro calculates day length, some intermediate variables for the
 calculation of the solar elevation, the integral of the solar elevation
 over a day and the fraction of diffuse radiation.
 }

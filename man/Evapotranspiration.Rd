@@ -2,7 +2,7 @@
 % Please edit documentation in R/Routines.R
 \name{Evapotranspiration}
 \alias{Evapotranspiration}
-\title{Evapotranspiration}
+\title{Evapotranspiration routine}
 \usage{
 Evapotranspiration(dvs, w, lai, sm, t, dsos, SM0, DEPNR, SMFCF, IAIRDU,
   IOX, CFET, SMW, CRAIRC, KDIFTB)
