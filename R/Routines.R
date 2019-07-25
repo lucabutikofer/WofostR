@@ -93,37 +93,38 @@ Astro<- function(w, t, lat){
 }
 
 
-#' CO2 assimilation routine
-#'
-#' Computes "pgass" (Potential daily CO2 assimilation rate).
-#' Calls functions "totass()" and "assim()"
-#'
-#' @param tday Average daytime temperature
-#' @param d From Astro. Astronomic day length
-#' @param sinld From Astro. Seasonal offset of sine of solar height
-#' @param cosld From Astro. Amplitude of sine of solar height
-#' @param lat Latitude
-#' @param sgd Daily global radiation
-#' @param sinbm From Astro. Integral of effective solar height
-#' @param dp From Astro. Diffuse radiation perpendicular to the direction light
-#' @param lai Leaf area index of whole canopy
-#' @param dvs Development stage
-#' @param t Day in the loop
-#' @param AMAXTB Afgen table (inst. gross assimilation rate at light saturation
-#'               vs. development stage)
-#' @param TMPFTB Afgen table (inst. gross assimilation rate at light saturation
-#'               vs. daytime temperature)
-#' @param TMNFTB Afgen table (inst. gross assimilation rate at light saturation
-#'               vs. 7 days running minumum temperature)
-#' @param EFFTB Afgen table (light use efficiency vs. daily mean temp),
-#'              crop-specific [kg ha-1 hr-1 j-1 m2 s]
-#' @export
-#'
 Assimilation<- function(
                         AMAXTB,TMPFTB,KDIFTB,EFFTB,TMNFTB,
                         d, lai, sgd, dp, sinbm, sinld, cosld, dvs,
                         tday, w, t, tmins
                         ){
+
+  # CO2 assimilation routine
+  #
+  # Computes "pgass" (Potential daily CO2 assimilation rate).
+  # Calls functions "totass()" and "assim()"
+  #
+  # @param tday Average daytime temperature
+  # @param d From Astro. Astronomic day length
+  # @param sinld From Astro. Seasonal offset of sine of solar height
+  # @param cosld From Astro. Amplitude of sine of solar height
+  # @param lat Latitude
+  # @param sgd Daily global radiation
+  # @param sinbm From Astro. Integral of effective solar height
+  # @param dp From Astro. Diffuse radiation perpendicular to the direction light
+  # @param lai Leaf area index of whole canopy
+  # @param dvs Development stage
+  # @param t Day in the loop
+  # @param AMAXTB Afgen table (inst. gross assimilation rate at light saturation
+  #               vs. development stage)
+  # @param TMPFTB Afgen table (inst. gross assimilation rate at light saturation
+  #               vs. daytime temperature)
+  # @param TMNFTB Afgen table (inst. gross assimilation rate at light saturation
+  #               vs. 7 days running minumum temperature)
+  # @param EFFTB Afgen table (light use efficiency vs. daily mean temp),
+  #              crop-specific [kg ha-1 hr-1 j-1 m2 s]
+  #
+
 
   # 7-day running average of TMIN
   if (t <= length(w@DAY)){ # necessary to have model running last row of test.
@@ -152,20 +153,21 @@ Assimilation<- function(
 }
 
 
-#' Assimilation of CO2 throughout the day
-#'
-#' This routine calculates the daily total gross CO2 assimilation by
-#' performing a Gaussian integration over time. At three different times of
-#' the day, irradiance is computed and used to calculate the instantaneous
-#' canopy assimilation, whereafter integration takes place. More information
-#' on this routine is given by Spitters et al. (1988).
-#'
-#' Called by Assimilation(). Calls Assim().
-#'
-#' @export
-#'
 totass<- function(d, amax, eff, lai, kdif, sgd,
                   dp, sinbm, sinld, cosld){
+
+  # Assimilation of CO2 throughout the day
+  #
+  # This routine calculates the daily total gross CO2 assimilation by
+  # performing a Gaussian integration over time. At three different times of
+  # the day, irradiance is computed and used to calculate the instantaneous
+  # canopy assimilation, whereafter integration takes place. More information
+  # on this routine is given by Spitters et al. (1988).
+  #
+  # Called by Assimilation(). Calls Assim().
+  #
+  #
+
 
   # Gauss points and weights
   xgauss<- c(0.1127017, 0.5000000, 0.8872983)
@@ -192,23 +194,24 @@ totass<- function(d, amax, eff, lai, kdif, sgd,
 }
 
 
-#' Assimilation of CO2 throughout the canopy
-#'
-#' This routine calculates the gross CO2 assimilation rate of
-#' the whole crop, FGROS, by performing a Gaussian integration
-#' over depth in the crop canopy. At three different depths in
-#' the canopy, (i.e. for different values of LAI) the
-#' assimilation rate is computed for given fluxes of photosynthe-
-#' tically active radiation, whereafter integration over depth
-#' takes place. More information on this routine is given by
-#' Spitters et al. (1988). The input variables SINB, PARDIR
-#' and PARDIF are calculated in routine TOTASS.
-#'
-#' Called by totas()
-#'
-#' @export
-#'
 assim<- function(amax,eff,lai,kdif,sinb,pardir,pardif){
+
+  # Assimilation of CO2 throughout the canopy
+  #
+  # This routine calculates the gross CO2 assimilation rate of
+  # the whole crop, FGROS, by performing a Gaussian integration
+  # over depth in the crop canopy. At three different depths in
+  # the canopy, (i.e. for different values of LAI) the
+  # assimilation rate is computed for given fluxes of photosynthe-
+  # tically active radiation, whereafter integration over depth
+  # takes place. More information on this routine is given by
+  # Spitters et al. (1988). The input variables SINB, PARDIR
+  # and PARDIF are calculated in routine TOTASS.
+  #
+  # Called by totas()
+  #
+  #
+
 
   # Gauss points and weights
   xgauss<- c(0.1127017, 0.5000000, 0.8872983)
@@ -363,9 +366,9 @@ Evapotranspiration<- function(dvs,w,lai,sm,t,dsos,SM0,DEPNR,SMFCF,IAIRDU,IOX,
 #' potential production is modelled by default (waterlimited = F)
 #' @param finishType Variable describing the conditionst riggering
 #' the end of the simulation.
-#' Can be any one of the following:
-#' "maturity": The model is terminated 7 days after maturity is reached
-#' Integer [1:365]: Maximum number of days for which the model is run.
+#' Can be either "maturity" -The model is terminated 7 days after maturity is
+#' reached - or
+#' an integer [1:365] -Maximum number of days for which the model is run.
 #' @param varReturn Character vector specifying which variables to output.
 #' Potentially, any of the variables produced inside the Wofost function
 #' can be returned. However the use of carReturn = NULL (default) is

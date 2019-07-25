@@ -20,6 +20,7 @@ potential production is modelled by default (waterlimited = F)}
 \item{finishType}{Variable describing the conditionst riggering
 the end of the simulation.
 Can be any one of the following:
+
 "maturity": The model is terminated 7 days after maturity is reached
 Integer [1:365]: Maximum number of days for which the model is run.}
 
