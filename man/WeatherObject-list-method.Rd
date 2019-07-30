@@ -7,6 +7,10 @@
 \usage{
 \S4method{WeatherObject}{list}(...)
 }
+\arguments{
+\item{...}{Named list where each named element corresponds to an omonimous
+slot in the WatherObject to be created.}
+}
 \description{
 S4 Method for generic "WeatherObject()", list
 }

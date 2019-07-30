@@ -4,7 +4,7 @@ R implementation of Wofost crop simulation model.
 ***
 See [De Wit et al. (2019)][1] for details.
 
-Python version available @ [ajdewit/pcse][2] as part of the Python Crop Simulation Environment (PCSE/WOFOST).
+Python version available at [ajdewit/pcse][2] as part of the Python Crop Simulation Environment (PCSE/WOFOST).
 
 ***
 ### Installation

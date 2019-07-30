@@ -1,6 +1,6 @@
 
 
-# INTERNAL, UNDOCUMENTED METHODS AND CLASSES ####
+# >> INTERNAL, UNDOCUMENTED METHODS AND CLASSES ####
 
 # TestCropObject class definition #####
 # S4 Class "TestCropObject"
@@ -147,13 +147,15 @@ setMethod(f='TestCropObject', signature='list',
 )
 
 
-# EXPORTED, DOCUMENTED METHODS AND CLASSES ####
+# >> EXPORTED, DOCUMENTED METHODS AND CLASSES ####
 
 # CropObject class definition #####
 #' S4 Class "CropObject"
 #'
 #' Contains crop parameters
-#'
+#' @param ... Named list where each named element corresponds to an omonimous
+#' slot in the CropObject to be created. Alternatively slots can be filled
+#' individually (e.g. with "CropObject(CVR = 2, SPA = 7)").
 #' @importFrom methods new slot slotNames
 #' @export CropObject
 #'
@@ -259,6 +261,7 @@ CropObject <- setClass('CropObject', slots = c(
 #'
 #' Prints a summary of the simulation object when typed or when
 #' "show(object_name)" is called
+#' @param object CropObject S4 object
 #' @export
 #'
 setMethod('show', 'CropObject',
@@ -279,6 +282,8 @@ setMethod('show', 'CropObject',
 # CropObject() method for "list" class ####
 #' S4 Method for generic "CropObject()", list
 #'
+#' @param ... Named list where each named element corresponds to an omonimous
+#' slot in the CropObject to be created.
 #' @export
 #'
 setMethod(f='CropObject', signature='list',
@@ -386,6 +391,9 @@ setMethod(f='CropObject', signature='list',
 #'
 #' Contains meteorological driving variables.
 #'
+#' @param ... Named list where each named element corresponds to an omonimous
+#' slot in the WeatherObject to be created. Alternatively slots can be filled
+#' individually (e.g. with "WeaterObject(CVR = 2, SPA = 7)").
 #' @importFrom methods new slot slotNames
 #' @export WeatherObject
 #'
@@ -415,6 +423,7 @@ WeatherObject <- setClass('WeatherObject', slots = c(
 #'
 #' Prints a summary of the weather object when typed or when
 #' "show(object_name)" is called
+#' @param object CropObject S4 object
 #' @export
 #'
 setMethod('show', 'WeatherObject',
@@ -437,7 +446,9 @@ setMethod('show', 'WeatherObject',
 
 # WeatherObject() method for list class ####
 #' S4 Method for generic "WeatherObject()", list
-#'
+#' @param ... Named list where each named element corresponds to an omonimous
+#' slot in the WatherObject to be created.
+
 #' @export
 #'
 setMethod(f='WeatherObject', signature='list',
@@ -459,6 +470,114 @@ setMethod(f='WeatherObject', signature='list',
               TMIN = ...$TMIN,
               VAP = ...$VAP,
               WIND = ...$WIND
+
+            )
+          }
+)
+
+
+# SoilObject class definition #####
+#' S4 Class "SoilObject"
+#'
+#' Contains soil parameters
+#'
+#' @param ... Named list where each named element corresponds to an omonimous
+#' slot in the SoilObject to be created. Alternatively slots can be filled
+#' individually (e.g. with "SoilObject(CVR = 2, SPA = 7)").
+#' @importFrom methods new slot slotNames
+#' @export SoilObject
+#'
+SoilObject <- setClass('SoilObject', slots = c(
+  # ~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ~~~~~~~  ~~~~~~~~~~
+  # Name     Description                                     Type     Unit
+  # ~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ~~~~~~~  ~~~~~~~~~~
+  # SMFCF     Field capacity of the soil                       SSo     -
+  # SM0       Porosity of the soil                             SSo     -
+  # SMW       Wilting point of the soil                        SSo     -
+  # CRAIRC    Soil critical air content (waterlogging)         SSo     -
+  # SOPE      maximum percolation rate root zone               SSo    |cmday-1|
+  # KSUB      maximum percolation rate subsoil                 SSo    |cmday-1|
+  # K0        hydraulic conductivity of saturated soil         SSo    |cmday-1|
+  # RDMSOL    Soil rootable depth                              SSo     cm
+  # IFUNRN    Indicates whether non-infiltrating fraction of   SSi    -
+  #         rain is a function of storm size (1)
+  #         or not (0)
+  # SSMAX     Maximum surface storage                          SSi     cm
+  # SSI       Initial surface storage                          SSi     cm
+  # WAV       Initial amount of water in total soil            SSi     cm
+  #         profile
+  # NOTINF    Maximum fraction of rain not-infiltrating into   SSi     -
+  #         the soil
+  # SMLIM     Initial maximum moisture content in initial      SSi     -
+  #         rooting depth zone.
+  # ~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ~~~~~~~  ~~~~~~~~~~
+
+  'SMFCF',
+  'SM0',
+  'SMW',
+  'CRAIRC',
+  'SOPE',
+  'KSUB',
+  'K0',
+  'RDMSOL',
+  'IFUNRN',
+  'SSMAX',
+  'SSI',
+  'WAV',
+  'NOTINF',
+  'SMLIM'
+
+)
+)
+
+
+# show() method for SoilObject class ####
+#' S4 Method for generic "show()", SoilObject
+#'
+#' Prints a summary of the simulation object when typed or when
+#' "show(object_name)" is called
+#' @param object CropObject S4 object
+#' @export
+#'
+setMethod('show', 'SoilObject',
+          function(object){
+            es<-NULL # empty slots
+            for(i in 1:length(slotNames(object))){
+              es[i]<- !is.null(slot(object,slotNames(object)[i]))
+            }
+            fs<-sum(es) # full slots
+            cat('\n', 'WofostR Soil Object:', '\n')
+            cat('>>',fs, 'soil parameters out of',
+                length(slotNames(object)),
+                'are specified.','\n', '\n')
+          }
+)
+
+
+# SoilObject() method for "list" class ####
+#' S4 Method for generic "SoilObject()", list
+#' @param ... Named list where each named element corresponds to an omonimous
+#' slot in the SoilObject to be created.
+#' @export
+#'
+setMethod(f='SoilObject', signature='list',
+          definition= function(...){
+            SoilObject(
+
+              SMFCF = ...$SMFCF,
+              SM0 = ...$SM0,
+              SMW = ...$SMW,
+              CRAIRC = ...$CRAIRC,
+              SOPE = ...$SOPE,
+              KSUB = ...$KSUB,
+              K0 = ...$K0,
+              RDMSOL = ...$RDMSOL,
+              IFUNRN = ...$IFUNRN,
+              SSMAX = ...$SSMAX,
+              SSI = ...$SSI,
+              WAV = ...$WAV,
+              NOTINF = ...$NOTINF,
+              SMLIM = ...$SMLIM
 
             )
           }

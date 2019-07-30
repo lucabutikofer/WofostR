@@ -6,6 +6,11 @@
 \usage{
 WeatherObject(...)
 }
+\arguments{
+\item{...}{Named list where each named element corresponds to an omonimous
+slot in the WeatherObject to be created. Alternatively slots can be filled
+individually (e.g. with "WeaterObject(CVR = 2, SPA = 7)").}
+}
 \description{
 Contains meteorological driving variables.
 }

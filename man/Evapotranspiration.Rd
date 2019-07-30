@@ -21,6 +21,8 @@ Evapotranspiration(dvs, w, lai, sm, t, dsos, SM0, DEPNR, SMFCF, IAIRDU,
 \item{dsos}{Days since oxygen stress, computed in classic waterbalance,
 accumulates the number of consecutive days of oxygen stress}
 
+\item{SM0}{Soil porosity}
+
 \item{DEPNR}{Crop group number}
 
 \item{SMFCF}{Soil moisture content at field capacity [cm3/cm3]}

@@ -6,6 +6,11 @@
 \usage{
 CropObject(...)
 }
+\arguments{
+\item{...}{Named list where each named element corresponds to an omonimous
+slot in the CropObject to be created. Alternatively slots can be filled
+individually (e.g. with "CropObject(CVR = 2, SPA = 7)").}
+}
 \description{
 Contains crop parameters
 }

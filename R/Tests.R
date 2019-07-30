@@ -29,17 +29,82 @@ test.Astro<- function(yamlFile, plt = TRUE, rtn = FALSE, ...){
   out<-NULL
   for (t in 1:length(w@DAY)){out[[t]]<- Astro(w=w,t=t,lat=lat)}
   for (t in 1:length(out)){out[[t]] <- unlist(out[[t]])}
-  out <- data.frame(do.call(rbind,out))
+  out<- data.frame(do.call(rbind,out))
+  out<- out[,1:ncol(out)-1]
 
   contr<- yam$results
+  prec<- data.frame(rbind(rep(0.0001,ncol(contr))))
 
   if (isTRUE(plt)){
-    plot.wofost.test(control = contr, output = out, weather = w, ...)
+    plot.wofost.test(control = contr, output = out, weather = w,
+                     precision = prec, ...)
   }
 
   if(isTRUE(rtn)) return(list('output'=out,'control'=contr))
 
 }
+
+
+test.Phenology<- function(yamlFile, plt = TRUE, rtn = FALSE, ...){
+
+  # Internal. Astro routine testing
+  #
+  # Tests the Astro routine with the testing data of
+  # De Wit et al. 2018
+  #
+  # @param yamlFile Path to yaml test file
+  # @param plt Logical. If TRUE prints plots of results with plot.wofost.test
+  # @param rtn Logical. If TRUE returns a list (see below)
+  # @param ... Arguments passed to function plot.wofost.test
+  # @return List of 2 elements. 'output': the variables values produced by the
+  #         script 'control': the variables values saved in the yaml file.
+
+  yam<- read.test.yaml(yamlFile = yamlFile)
+
+  # Weather
+  w<- yam$weather
+  w[,1]<- as.Date(w[,1])
+  for(i in 2:ncol(w)){
+    w[,i]<- as.numeric(levels(w[,i]))[w[,i]]
+  }
+  w<- WeatherObject(w)
+
+  # parameters
+  prmt<- yam[["parameters"]]
+  cr<- CropObject(prmt)
+
+  cr@IDSL<- 0
+  if(cr@DLC != -99 | cr@DLO != -99) {cr@IDSL<- 1}
+  if(!is.null(cr@VERNDVS)) {cr@IDSL<- 2}
+
+  out<- Phenology(crop=cr, w=w,
+                  startType= yam[["agro"]][["crop_start_type"]],
+                  finishType= nrow(yam$weather)
+                 )
+  for (i in 1:length(out)){out[[i]]<-as.numeric(out[[i]])}
+  out<- data.frame(do.call(cbind,out))
+
+  # results
+  contr<- yam$results
+  contr[,1]<- as.Date(contr[,1])
+  for(i in 2:ncol(contr)){
+    contr[,i]<- as.numeric(levels(contr[,i]))[contr[,i]]
+  }
+
+  contr<- contr[1:nrow(out),]
+  w@DAY<-w@DAY[1:nrow(out)]
+
+  prec<- yam$precision
+
+  if (isTRUE(plt)){
+    plot.wofost.test(control = contr, output = out, weather = w,
+                     precision = prec, ...)
+  }
+
+  if(isTRUE(rtn)) return(list('output'=out,'control'=contr))
+
+}
+
 
 test.Assimilation<- function(yamlFile, plt = TRUE, rtn = FALSE, ...){
 
@@ -454,9 +519,8 @@ test.Evapotranspiration<- function(yamlFile, plt = TRUE, ...){
     dvs<- DVS[t]
 
     if(dvs >= 0){
-      out[[t]]<- Evapotranspiration(dvs,w,lai,sm,t,dsos=0,SM0,DEPNR,SMFCF,
-                                    IAIRDU,IOX,
-                                    CFET,SMW,CRAIRC)
+      out[[t]]<- Evapotranspiration(dvs,w,lai,sm,t,dsos,SM0,DEPNR,SMFCF,IAIRDU,
+                                    IOX,CFET,SMW,CRAIRC,KDIFTB)
     } else {out[[t]]<- list('evsmx'=0,'evwmx'=0,'tra'=0,'tramx'=0,'rftra'=0)}
   }
   OUT<- NULL
@@ -534,6 +598,68 @@ test.PotentialProduction<- function(yamlFile, plt = TRUE, rtn = FALSE, ...){
   for(i in 2:ncol(contr)){
     contr[,i]<- as.numeric(levels(contr[,i]))[contr[,i]]
   }
+
+  if(isTRUE(plt)){
+    plot.wofost.test(control = contr, output = out, weather = w,
+                     precision = yam[["precision"]], ...)
+  }
+
+  if(isTRUE(rtn)) return(list('output'=out,'control'=contr))
+
+}
+
+
+test.WaterLimitedProduction<- function(yamlFile, plt = TRUE, rtn = FALSE, ...){
+
+  # Internal. Potential Production routine testing
+  #
+  # Tests the Potential Production routine with the testing data of
+  # De Wit et al. 2018
+  #
+  # @param yamlFile Path to yaml test file
+  # @param plt Logical. If TRUE prints plots of results with plot.wofost.test
+  # @param rtn Logical. If TRUE returns a list (see below)
+  # @param ... Arguments passed to function plot.wofost.test
+  # @return List of 2 elements. 'output': the variables values produced by the
+  #         script 'control': the variables values saved in the yaml file.
+
+  yam<- read.test.yaml(yamlFile = yamlFile)
+
+  # Weather
+  w<- yam$weather
+  w[,1]<- as.Date(w[,1])
+  for(i in 2:ncol(w)){
+    w[,i]<- as.numeric(levels(w[,i]))[w[,i]]
+  }
+  w<- WeatherObject(w)
+
+  # Crop parameters
+  prmt<- yam[["parameters"]]
+  cr<- CropObject(prmt)
+
+  # Soil parameters
+  sl<- SoilObject(prmt)
+
+  # run model
+  out<- WofostFD(
+    crop=cr, w=w, soil=sl,
+    startType=prmt$CROP_START_TYPE,
+    finishType=nrow(yam$weather),
+    varReturn=c('dvs','EVS',"lai","rd","sm","tagp","tra","twlv","twrt",
+                "twso","twst","W","WLOW","WWLOW")
+  )
+  for (i in 1:length(out)){out[[i]]<-as.numeric(out[[i]])}
+  out<- data.frame(do.call(cbind,out))
+
+  # results
+  contr<- yam$results
+  contr[,1]<- as.Date(contr[,1])
+  for(i in 2:ncol(contr)){
+    contr[,i]<- as.numeric(levels(contr[,i]))[contr[,i]]
+  }
+
+  contr<- contr[1:nrow(out),]
+  w@DAY<-w@DAY[1:nrow(out)]
 
   if(isTRUE(plt)){
     plot.wofost.test(control = contr, output = out, weather = w,

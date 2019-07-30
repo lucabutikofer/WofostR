@@ -7,6 +7,10 @@
 \usage{
 \S4method{CropObject}{list}(...)
 }
+\arguments{
+\item{...}{Named list where each named element corresponds to an omonimous
+slot in the CropObject to be created.}
+}
 \description{
 S4 Method for generic "CropObject()", list
 }

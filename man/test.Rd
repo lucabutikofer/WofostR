@@ -7,12 +7,18 @@
 test(component = "All", complete = FALSE)
 }
 \arguments{
-\item{component}{Character. Either one of the testing sets released
-in De Wit 2018. Any of "assimilation", "astro", "leafdynamics",
-"partitioning", "phenology", "potentialproduction", "respiration",
-"rootdynamics", "transpiration", "waterlimitedproduction". If not specified
-will run all available components.
-However, currently limited to PP, LD, A.}
+\item{component}{Character. Name of module to test among:
+"astro","phenology","transpiration","potentialproduction",
+"waterlimitedproduction".
+
+Although testing sets for more modules have been made available in
+De Wit et al. 2018, it does not make sense to test some available modules
+since they have not been implemente in WofostR as independent components,
+but rather they have been hard-coded into other functions.
+Examples of these are 'partitioning', 'root dynamics', 'leaf dynamics',
+and others that do not exhist as independet R functions.
+
+If not specified will run all available components.}
 
 \item{complete}{Logical. If FALSE only a subset of 3 files per set will be
 used for testing.}
@@ -20,5 +26,5 @@ used for testing.}
 \description{
 Tests different components of this R implementation of Wofost by
 comparison with the testing sets published in
-De Wit 2018 (Agricultural Systems journal).
+De Wit et al. 2018.
 }

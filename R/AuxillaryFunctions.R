@@ -40,7 +40,7 @@ plot.wofost.test <- function(output,control,weather,precision = FALSE,
   #               Column order must be the same as in "control".
   # @param control Control section of yaml test file as returned by function
   #                make.afgen
-  # @param weather wather section of yaml test file as returned by function
+  # @param weather weather section of yaml test file as returned by function
   #                make.afgen
   # @param precision Precision section of yaml test file as returned by function
   #                make.afgen
@@ -170,11 +170,13 @@ read.test.yaml<- function(yamlFile){
   # Model parameters
   parm<- ryam[["ModelParameters"]]
   parmClass<-NULL
-  for (i in 1:length(parm)){
-    if(length((parm[[i]])) > 1){
-      parm[[i]]<- make.afgen(parm[[i]])
+  if (!is.null(parm)){
+    for (i in 1:length(parm)){
+      if(length((parm[[i]])) > 1){
+        parm[[i]]<- make.afgen(parm[[i]])
+      }
+      parmClass[[i]]<- class(parm[[i]])
     }
-    parmClass[[i]]<- class(parm[[i]])
   }
   if ('list' %in% parmClass){
     parm[[which(parmClass == 'list')]]<- NULL
@@ -240,24 +242,29 @@ test.afgen<- function(at){
 #'
 #' Tests different components of this R implementation of Wofost by
 #' comparison with the testing sets published in
-#' De Wit 2018 (Agricultural Systems journal).
+#' De Wit et al. 2018.
 #'
-#' @param component Character. Either one of the testing sets released
-#' in De Wit 2018. Any of "assimilation", "astro", "leafdynamics",
-#' "partitioning", "phenology", "potentialproduction", "respiration",
-#' "rootdynamics", "transpiration", "waterlimitedproduction". If not specified
-#' will run all available components.
-#' However, currently limited to PP, LD, A.
+#' @param component Character. Name of module to test among:
+#' "astro","phenology","transpiration","potentialproduction",
+#' "waterlimitedproduction".
+#'
+#' Although testing sets for more modules have been made available in
+#' De Wit et al. 2018, it does not make sense to test some available modules
+#' since they have not been implemente in WofostR as independent components,
+#' but rather they have been hard-coded into other functions.
+#' Examples of these are 'partitioning', 'root dynamics', 'leaf dynamics',
+#' and others that do not exhist as independet R functions.
+#'
+#' If not specified will run all available components.
+#'
 #' @param complete Logical. If FALSE only a subset of 3 files per set will be
 #' used for testing.
 #' @export
 #'
 test<- function(component= "All", complete= FALSE){
 
-  allcomp<- c("assimilation", "astro", "leafdynamics",
-             "partitioning", "phenology", "potentialproduction",
-             "respiration", "rootdynamics", "transpiration",
-             "waterlimitedproduction")
+  allcomp<- c('astro','phenology','transpiration',
+              'potentialproduction','waterlimitedproduction')
 
   if(component != "All"){
     if(isFALSE(component %in% allcomp)){
@@ -267,13 +274,75 @@ test<- function(component= "All", complete= FALSE){
   } else {testall<- TRUE}
 
   # Retrieve list of test files names saved in "R/sysdata.rda"
-  fls<- WofostR:::testFilesNames # probably would work without
-                                 # "WofostR:::"
-
+  fls<- testFilesNames
   spl<- strsplit(fls,'_')
   gr<- NULL # groups of files pertaining the same tests
   for (i in 1:length(spl)){
     gr[i]<- spl[[i]][2]
+  }
+
+  # Astro
+  if (component == "astro" | testall == TRUE){
+    cat('\n','Testing Astro','\n','\n')
+    xfls<- fls[gr == 'astro']
+    if (isFALSE(complete)){xfls<- xfls[sample(1:length(xfls),3)]}
+    for (i in 1:length(xfls)){
+      print(i)
+
+      request <- httr::GET(paste0(
+        'https://raw.github.com/lucabutikofer/WofostR_testData/master/',
+        xfls[i]
+      ))
+      httr::stop_for_status(request)
+      handle <- textConnection(httr::content(request, as = 'text'))
+      yamlFile<- yaml::read_yaml(handle)
+      close(handle)
+
+      test.Astro(yamlFile, keypress=F)
+    }
+  }
+
+  # Phenology
+  if (component == "phenology" | testall == TRUE){
+    cat('\n','Testing Phenology','\n','\n')
+    xfls<- fls[gr == 'phenology']
+    if (isFALSE(complete)){xfls<- xfls[sample(1:length(xfls),3)]}
+    for (i in 1:length(xfls)){
+      print(i)
+
+      request <- httr::GET(paste0(
+        'https://raw.github.com/lucabutikofer/WofostR_testData/master/',
+        xfls[i]
+      ))
+      httr::stop_for_status(request)
+      handle <- textConnection(httr::content(request, as = 'text'))
+      yamlFile<- yaml::read_yaml(handle)
+      close(handle)
+
+      test.Phenology(yamlFile, keypress=F)
+    }
+  }
+
+
+  # Transpiration
+  if (component == "transpiration" | testall == TRUE){
+    cat('\n','Testing Transpiration','\n','\n')
+    xfls<- fls[gr == 'transpiration']
+    if (isFALSE(complete)){xfls<- xfls[sample(1:length(xfls),3)] }
+    for (i in 1:length(xfls)){
+      print(i)
+
+      request <- httr::GET(paste0(
+        'https://raw.github.com/lucabutikofer/WofostR_testData/master/',
+        xfls[i]
+      ))
+      httr::stop_for_status(request)
+      handle <- textConnection(httr::content(request, as = 'text'))
+      yamlFile<- yaml::read_yaml(handle)
+      close(handle)
+
+      test.Evapotranspiration(yamlFile, keypress=F)
+    }
   }
 
   # Potential Production
@@ -297,10 +366,10 @@ test<- function(component= "All", complete= FALSE){
     }
   }
 
-  # Leaf Dynamics
-  if (component == "leafdynamics" | testall == TRUE){
-    cat('\n','Testing Leaf Dynamics','\n','\n')
-    xfls<- fls[gr == 'leafdynamics']
+  # Water-Limited Production
+  if (component == "waterlimitedproduction" | testall == TRUE){
+    cat('\n','Testing Water-Limited Production','\n','\n')
+    xfls<- fls[gr == 'waterlimitedproduction']
     if (isFALSE(complete)){xfls<- xfls[sample(1:length(xfls),3)] }
     for (i in 1:length(xfls)){
       print(i)
@@ -314,30 +383,10 @@ test<- function(component= "All", complete= FALSE){
       yamlFile<- yaml::read_yaml(handle)
       close(handle)
 
-      test.LeafDynamics(yamlFile, keypress=F)
+      test.WaterLimitedProduction(yamlFile, keypress=F)
     }
   }
 
-  # Assimilation
-  if (component == "assimilation" | testall == TRUE){
-    cat('\n','Testing Assimilation','\n','\n')
-    xfls<- fls[gr == 'assimilation']
-    if (isFALSE(complete)){xfls<- xfls[sample(1:length(xfls),3)] }
-    for (i in 1:length(xfls)){
-      print(i)
-
-      request <- httr::GET(paste0(
-        'https://raw.github.com/lucabutikofer/WofostR_testData/master/',
-        xfls[i]
-      ))
-      httr::stop_for_status(request)
-      handle <- textConnection(httr::content(request, as = 'text'))
-      yamlFile<- yaml::read_yaml(handle)
-      close(handle)
-
-      test.Assimilation(yamlFile, keypress=F)
-    }
-  }
 
 }
 

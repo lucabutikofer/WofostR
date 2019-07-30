@@ -7,6 +7,9 @@
 \usage{
 \S4method{show}{WeatherObject}(object)
 }
+\arguments{
+\item{object}{CropObject S4 object}
+}
 \description{
 Prints a summary of the weather object when typed or when
 "show(object_name)" is called
