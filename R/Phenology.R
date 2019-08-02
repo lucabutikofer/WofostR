@@ -55,9 +55,9 @@ Phenology<- function(
   vern_out<- NULL
   vernfac_out<- NULL
   vernr_out<- NULL
+  vernfacNF_out<- NULL
 
   # Helper variables
-  astro<- 0
   stopInSeven<- 7
   vernr<- 0
 
@@ -66,7 +66,6 @@ Phenology<- function(
 
   while (isFALSE(STOP)){ # main loop.
     # 't' counts the days, one iteration per day.
-
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # > INITIALISATION ####
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -80,6 +79,7 @@ Phenology<- function(
       isvernalised<- FALSE
       force_vernalisation<- FALSE
       dov<- NULL # date of vernalisation
+      vernfacNF<- 0
 
       # Define initial stage type (emergence/sowing)
       if (crop_start_type == "emergence"){
@@ -118,14 +118,17 @@ Phenology<- function(
       if (stage == 'vegetative'){
         # here starts PCSE's "vernalisation.calc_rates"..................#|
         if (isFALSE(isvernalised)){                                      #|
-          if (dvs < VERNDVS){ # Vernalisation requirements reached.      #|
+          if (dvs < VERNDVS){                                            #|
             vernr<- afgen(temp,VERNRTB)                                  #|
             r<- (vern - VERNBASE)/(VERNSAT - VERNBASE)                   #|
             vernfac<- limit(0, 1, r)                                     #|
+            vernfacNF<- vernfac
           } else {                                                       #|
             vernr<- 0                                                    #|
             vernfac<- 1                                                  #|
-            force_vernalisation<- TRUE                                   #|
+            if(isFALSE(force_vernalisation)){                            #|
+              force_vernalisation<- TRUE                                 #|
+            }                                                            #|
           }                                                              #|
         } else {                                                         #|
           vernr<- 0                                                      #|
@@ -140,6 +143,10 @@ Phenology<- function(
       dtsume<- effect_temp(TEFFMX, TBASEM, temp)
       dtsum<- 0
       dvr<- 0.1 * dtsume/TSUMEM
+      # some crops (e.g. Rice_HYV_IR8) have TSUMEM set to 0, which complimcates
+      # computations with "Inf" and "NaN". Set dvr to 1000
+      # to skip to next development stage.
+      if(TSUMEM == 0){dvr <- 1000}
     } else if (stage == 'vegetative'){
       dtsume<- 0
       dtsum<- afgen(temp, DTSMTB) * vernfac * dvred
@@ -160,6 +167,7 @@ Phenology<- function(
     # > TEST FINISH CONDITIONS ####
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+    if (t > 365){ STOP <- TRUE} # model can't run more than a
     if(finishType == 'maturity'){ # finishType = 'maturity'
       if (stopInSeven == 0) {STOP<- TRUE}
     } else if (class(finishType) == 'numeric' |
@@ -177,11 +185,12 @@ Phenology<- function(
       # > COLLECT OUTPUT ####
       #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-      dvs_out[t]<-     dvs
-      dvr_out[t]<-     dvr
-      vern_out[t]<-    vern
-      vernfac_out[t]<- vernfac
-      vernr_out[t]<-   vernr
+      dvs_out[t]<-            dvs
+      dvr_out[t]<-            dvr
+      vern_out[t]<-           vern
+      vernfac_out[t]<-        vernfac
+      vernr_out[t]<-          vernr
+      vernfacNF_out[t]<-      vernfacNF
 
 
       #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -207,10 +216,14 @@ Phenology<- function(
           } else if (isTRUE(force_vernalisation)){                       #|
             isvernalised<- TRUE                                          #|
             warning(paste0(                                              #|
-              'Critical DVS for vernalisation (VERNDVS) reached
-             at day ',t,
-              ' but vernalisation requirements not yet fulfilled.',
-              'forcing vernalisation now (vern= ',vern,').'))
+              '\n', crop@VARNAME, ':\n',
+              'Critical DVS for vernalisation (VERNDVS) reached at day ',
+              t,
+              ', but vernalisation requirements not yet fulfilled.', '\n',
+              'Forcing vernalisation now.', '\n',
+              'VERN: ', round(vern, digits = 2), '\n'
+              ))
+            force_vernalisation <- 'OFF'
           } else {                                                       #|
             isvernalised<- FALSE                                         #|
           }                                                              #|
@@ -259,7 +272,8 @@ Phenology<- function(
       'dvs'= dvs_out,
       'vern'= vern_out,
       'vernfac'= vernfac_out,
-      'vernr'= vernr_out
+      'vernr'= vernr_out,
+      'vernfacNF'= vernfacNF
     ))
 }
 

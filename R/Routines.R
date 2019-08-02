@@ -46,6 +46,11 @@ Astro<- function(w, t, lat){
   # daily global radiation
   sgd<- w@IRRAD[t]
 
+  # when Astro() is called by Phenology() the only required output is dlp
+  # and w@IRRAD is not necessary. So a fake radiation value is set to
+  # prevent the funciton from crashing.
+  if (is.null(sgd)){sgd <- 1000}
+
   # solar declination
   sold<- sol_dec(td)
 

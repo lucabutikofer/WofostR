@@ -161,6 +161,8 @@ setMethod(f='TestCropObject', signature='list',
 #'
 CropObject <- setClass('CropObject', slots = c(
 
+  'CROPNAME',
+  'VARNAME',
   'CO2EFFTB',
   'CO2TRATB',
   'CO2AMAXTB',
@@ -290,6 +292,8 @@ setMethod(f='CropObject', signature='list',
           definition= function(...){
             CropObject(
 
+              CROPNAME = ...$CROPNAME,
+              VARNAME = ...$VARNAME,
               CO2EFFTB = ...$CO2EFFTB,
               CO2TRATB = ...$CO2TRATB,
               CO2AMAXTB = ...$CO2AMAXTB,

@@ -432,12 +432,53 @@ dwn.crop<- function(cropName='potato', variety='Potato_701'){
   }
 
   cr<- CropObject(yv0)
+  cr@CROPNAME<- cropName
+  cr@VARNAME<- variety
 
   return(cr)
 
 }
 
+#' Subsets weather object
+#'
+#' Returns a section of the WeatherObject based on dates
+#' @ param obj WeatherObject
+#' @param interval Either a vector of integers representing the indices of the
+#' days to extract or a vector of class="Date" and length=2 containing the
+#' initial and final date of the period to extract.
+#' @return WeatherObject of the selected period
+#' @export
+#'
+subsetObj <- function(obj, interval){
 
+  # Convert dates into indices
+  if (class(interval) == 'Date'){
+    interval1 <- which(w@DAY == interval[1])
+    interval2 <- which(w@DAY == interval[2])
+    interval <- seq(interval1, interval2, 1)
+  }
+
+  tempObj <- obj
+
+  tempObj@DAY <- tempObj@DAY[interval]
+  tempObj@E0 <- tempObj@E0[interval]
+  tempObj@ELEV <- tempObj@ELEV[interval]
+  tempObj@ES0 <- tempObj@ES0[interval]
+  tempObj@ET0 <- tempObj@ET0[interval]
+  tempObj@IRRAD <- tempObj@IRRAD[interval]
+  tempObj@LAT <- tempObj@LAT[interval]
+  tempObj@LON <- tempObj@LON[interval]
+  tempObj@RAIN <- tempObj@RAIN[interval]
+  tempObj@SNOWDEPTH <- tempObj@SNOWDEPTH[interval]
+  tempObj@TEMP <- tempObj@TEMP[interval]
+  tempObj@TMAX <- tempObj@TMAX[interval]
+  tempObj@TMIN <- tempObj@TMIN[interval]
+  tempObj@VAP <- tempObj@VAP[interval]
+  tempObj@WIND <- tempObj@WIND[interval]
+
+  return(tempObj)
+
+}
 
 
 
