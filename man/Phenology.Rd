@@ -2,7 +2,7 @@
 % Please edit documentation in R/Phenology.R
 \name{Phenology}
 \alias{Phenology}
-\title{Phenology module}
+\title{Stand-alone phenology module}
 \usage{
 Phenology(crop, w, startType = "sowing", finishType = "maturity")
 }

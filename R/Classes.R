@@ -274,7 +274,9 @@ setMethod('show', 'CropObject',
             }
             fs<-sum(es) # full slots
             cat('\n', 'WofostR Crop Object:', '\n')
-            cat('>>',fs, 'crop parameters out of',
+            cat(' >>', 'Crop name:', object@CROPNAME, '\n')
+            cat(' >>','Variety name:', object@VARNAME, '\n')
+            cat(' >>',fs, 'crop parameters out of',
                 length(slotNames(object)),
                 'are specified.','\n', '\n')
           }

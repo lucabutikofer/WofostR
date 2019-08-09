@@ -16,4 +16,7 @@ LazyData: true
 RoxygenNote: 6.1.1
 Imports: yaml, methods, httr
 Depends: R (>= 2.10)
-
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr

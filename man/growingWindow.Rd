@@ -22,5 +22,5 @@ year.}
 on "https://github.com/ajwdewit/WOFOST_crop_parameters.git" will be run.}
 }
 \description{
-Determins if a crop can reach maturity when grown in a specific location
+Determins if a crop can reach maturity when grown at a specific location
 }

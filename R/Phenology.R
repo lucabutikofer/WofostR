@@ -1,5 +1,5 @@
 
-#' Phenology module
+#' Stand-alone phenology module
 #'
 #' Computes the phenological development of the crop
 #'

@@ -1,6 +1,6 @@
 #' Find growing window
 #'
-#' Determins if a crop can reach maturity when grown in a specific location
+#' Determins if a crop can reach maturity when grown at a specific location
 #'
 #' @param crop Character identifying the name of the crop to be
 #' downlowaded with function dwn.crop().

@@ -11,6 +11,16 @@ test(component = "All", complete = FALSE)
 "astro","phenology","transpiration","potentialproduction",
 "waterlimitedproduction".
 
+If not specified will run all available components.}
+
+\item{complete}{Logical. If FALSE only a subset of 3 files per set will be
+used for testing.}
+}
+\description{
+Tests different Wofost modules by comparison with the testing sets
+published by De Wit et al. (2018).
+}
+\details{
 Although testing sets for more modules have been made available in
 De Wit et al. 2018, it does not make sense to test some available modules
 since they have not been implemente in WofostR as independent components,
@@ -18,13 +28,8 @@ but rather they have been hard-coded into other functions.
 Examples of these are 'partitioning', 'root dynamics', 'leaf dynamics',
 and others that do not exhist as independet R functions.
 
-If not specified will run all available components.}
-
-\item{complete}{Logical. If FALSE only a subset of 3 files per set will be
-used for testing.}
-}
-\description{
-Tests different components of this R implementation of Wofost by
-comparison with the testing sets published in
-De Wit et al. 2018.
+"phenology" tests the stand-alone module
+Phenology() used by function growingWindow(). Phenological processes
+are hardcoded within in Wofost() and can only be tested through
+"potentialproduction" and "waterlimitedproduction".
 }
