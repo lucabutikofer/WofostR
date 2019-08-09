@@ -3,15 +3,7 @@ title: "WofostR_Tutorial"
 subtitle: "R implementation of Wofost crop simulation model"
 author: "Luca Bütikofer"
 date: "`r Sys.Date()`"
-
-# Use this to generate vignette files:
 output: rmarkdown::html_vignette
-
-# Use this to generate README.md for github:
-# output:
-#   md_document:
-#     variant: markdown_github
-
 vignette: >
   %\VignetteIndexEntry{WofostR Tutorial}
   %\VignetteEngine{knitr::rmarkdown}
