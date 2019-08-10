@@ -7,6 +7,8 @@
 subsetObj(obj, interval)
 }
 \arguments{
+\item{obj}{weatherObject object to be subset.}
+
 \item{interval}{Either a vector of integers representing the indices of the
 days to extract or a vector of class="Date" and length=2 containing the
 initial and final date of the period to extract.}

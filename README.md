@@ -14,10 +14,10 @@ Python Crop Simulation Environment (PCSE/WOFOST).
 
 Install with:
 ```R
-devtools::install_github('lucabutikofer/WofostR', build_opts = c("--no-resave-data", "--no-manual"))
+devtools::install_github('lucabutikofer/WofostR', build_opts = c("--no-resave-data", "--no-manual"), build_vignettes = T)
 ```
 
-Variable `build_opts = c("--no-resave-data", "--no-manual")` insures that vignettes are built.
+Variable `build_opts = c("--no-resave-data", "--no-manual"), build_vignettes = T` insures that vignettes are built both in Mac and Windows environments.
 
 ***
 ### Documentation
