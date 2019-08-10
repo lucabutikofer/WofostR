@@ -497,8 +497,8 @@ bl_coef<- function(sinb){
 # Diffuse radiation extinction coefficient (5.15)
 
 # NOTE: In the model, the extinction coefficient for the diffuse radiation flux,
-#       κdf (acronym: KDIF), is not computed but should be provided by the user.
-#       It can be measured directly under diffuse sky conditions.
+# κdf (acronym: KDIF), is not computed but should be provided by the user.
+# It can be measured directly under diffuse sky conditions.
 
 df_coef<- function(s, kbl){
 

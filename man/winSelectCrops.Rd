@@ -6,6 +6,9 @@
 \usage{
 winSelectCrops(gw)
 }
+\arguments{
+\item{gw}{Growing Window. The output of growingWindow() function.}
+}
 \description{
 Takes the output of growingWindow() and returns a selection of
 crop/varieties that reached maturity with their corresponding sowing

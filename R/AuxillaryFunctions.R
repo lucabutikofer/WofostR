@@ -451,6 +451,7 @@ dwn.crop<- function(cropName='potato', variety='Potato_701'){
 #' @param interval Either a vector of integers representing the indices of the
 #' days to extract or a vector of class="Date" and length=2 containing the
 #' initial and final date of the period to extract.
+#' @param obj weatherObject object to be subset.
 #' @return WeatherObject of the selected period
 #' @export
 #'

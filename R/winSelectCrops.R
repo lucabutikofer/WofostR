@@ -3,8 +3,7 @@
 #' Takes the output of growingWindow() and returns a selection of
 #' crop/varieties that reached maturity with their corresponding sowing
 #' dates. This is useful for running WofostXX() on those.
-#'
-#' @parm gw Growing Window. The output of growingWindow() function.
+#' @param gw Growing Window. The output of growingWindow() function.
 #'
 #' @export
 #'
