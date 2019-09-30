@@ -5,7 +5,7 @@
 \title{Find growing window}
 \usage{
 growingWindow(crop = "potato", variety = "Potato_701", w,
-  allVar = FALSE)
+  allVar = FALSE, crLocal = NULL)
 }
 \arguments{
 \item{crop}{Character identifying the name of the crop to be
@@ -20,6 +20,9 @@ year.}
 
 \item{allVar}{Logical. If TRUE all crop-variety combinations available
 on "https://github.com/ajwdewit/WOFOST_crop_parameters.git" will be run.}
+
+\item{crLocal}{Character vector. If crops are stored locally, this is
+the path where all crop yaml files are stored.}
 }
 \description{
 Determins if a crop can reach maturity when grown at a specific location

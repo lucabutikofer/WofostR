@@ -11,21 +11,35 @@
 #' year.
 #' @param allVar Logical. If TRUE all crop-variety combinations available
 #' on "https://github.com/ajwdewit/WOFOST_crop_parameters.git" will be run.
+#' @param crLocal Character vector. If crops are stored locally, this is
+#' the path where all crop yaml files are stored.
 #' @export
 #'
 growingWindow <- function(crop = "potato", variety = "Potato_701",
-                          w, allVar = FALSE){
+                          w, allVar = FALSE, crLocal = NULL){
 
-  if (isTRUE(allVar)){out <- growingWindowAll(w)}
+  # Add "/" at the end of "crLocal" if specified and not ending in "/" already
+  if (!is.null(crLocal)){
+    if (substr(crLocal, nchar(crLocal), nchar(crLocal)) != '/'){
+      crLocal <- paste0(crLocal,'/')
+    }
+  }
 
-  if (isFALSE(allVar)){out <- growingWindowOne(crop, variety, w)}
+  # Run "growingWindowAll" if "allVar==TRUE"
+  if (isTRUE(allVar)){out <- growingWindowAll(w, crLocal)}
+
+  # Run "growingWindowONE" if "allVar==FALSE"
+  if (isFALSE(allVar)){out <- growingWindowOne(crop, variety, w, crLocal)}
 
   return(out)
 
 }
 
 
-growingWindowAll <- function(w){
+growingWindowAll <- function(w, crLocal){
+
+  # Create progress bar
+  pb <- txtProgressBar(min = 1, max = nrow(cropVarList), style = 3)
 
   outAll <- NULL
   for (i in 1:nrow(cropVarList)){
@@ -33,9 +47,10 @@ growingWindowAll <- function(w){
     crop <- as.character(cropVarList$crop[i])
     variety <- as.character(cropVarList$variety[i])
 
-    cat(paste0(round(i/nrow(cropVarList)*100), '% ', crop, ' ', variety, '\n'))
+    outAll[[i]] <- growingWindowOne(crop, variety, w, crLocal)
 
-    outAll[[i]] <- growingWindowOne(crop, variety, w)
+    # Update progress bar
+    setTxtProgressBar(pb, i)
 
   }
   names(outAll) <- paste(as.character(cropVarList[,1]),
@@ -47,10 +62,46 @@ growingWindowAll <- function(w){
 }
 
 
-growingWindowOne <- function(crop, variety, w){
+growingWindowOne <- function(crop, variety, w, crLocal){
 
-  # Download crop from the web
-  cr <- dwn.crop(cropName = crop, variety = variety)
+
+  #=================#
+  # MAKE CropObject #
+  #=================#
+
+  # Retrieve crop data either online or locally
+  if (is.null(crLocal)){   # Download crop from the web
+    cr <- dwn.crop(cropName = crop, variety = variety)
+  } else {               # Read crLocal file
+    y<- yaml::read_yaml(paste0(crLocal, crop, '.yaml'))
+
+    # Select variety
+    yv<- y[["CropParameters"]][["Varieties"]][[variety]]
+
+    # Reorganise list structure
+    yv0<- NULL
+    for(i in 1:length(yv)){
+      yv0[[i]]<- yv[[i]][[1]]
+    }
+    names(yv0)<- names(yv)
+
+    # Make matrixes out of afgen vectors
+    for (i in 1:length(yv0)){
+      if(length((yv0[[i]])) > 1){
+        yv0[[i]]<- make.afgen(yv0[[i]])
+      }
+    }
+
+    # Make CropObject
+    cr<- CropObject(yv0)
+    cr@CROPNAME<- crop
+    cr@VARNAME<- variety
+  }
+
+
+  #========================================#
+  # SETUP TIME INTERVALS AND RUN PHENOLOGY #
+  #========================================#
 
   # Generate vector of first of the month dates for the time span in w
   firsts <- seq.Date(from = w@DAY[1], to = w@DAY[length(w@DAY)], by = 'month')
@@ -69,6 +120,11 @@ growingWindowOne <- function(crop, variety, w){
                        )
   }
 
+
+  #=============================#
+  # REORGANISE OUTPUT STRUCTURE #
+  #=============================#
+
   # Extract the maximum development stage reached for each starting month,
   # no. of days to reach it, and vernalisation factors
   # (only for winter wheat)
@@ -83,7 +139,10 @@ growingWindowOne <- function(crop, variety, w){
   if(crop != 'wheat'){
     out <- data.frame(startDate = firsts[1:(length(firsts) - 12)],
                       dvs = dvs,
-                      days = days)
+                      days = days,
+                      vern = rep("NA", length(dvs)),
+                      vernfacNF = rep("NA", length(dvs))
+                      )
   }
 
   if(crop == 'wheat'){

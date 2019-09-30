@@ -4,7 +4,7 @@
 \alias{winSelectWofost}
 \title{Runs wofost for winSelectCrops() output}
 \usage{
-winSelectWofost(gwOut, w, waterlimited = FALSE)
+winSelectWofost(gwOut, w, s, crLocal = NULL, waterLimited = FALSE)
 }
 \arguments{
 \item{gwOut}{Selected crops as outputted from winSelectCrops().}
@@ -12,7 +12,12 @@ winSelectWofost(gwOut, w, waterlimited = FALSE)
 \item{w}{WeatherObject. Must encompass the period from the earliest
 sowing date to 730 days after the last sowing date.}
 
-\item{waterlimited}{Logical. If FALSE (default) runs potential production.
+\item{s}{SoilObject.}
+
+\item{crLocal}{Character vector. If crops are stored locally, this is
+the path where all crop yaml files are stored.}
+
+\item{waterLimited}{Logical. If FALSE (default) runs potential production.
 If TRUE, free draining water-limited production.}
 }
 \description{

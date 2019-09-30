@@ -980,7 +980,7 @@ WofostFD<- function(
       sm<- W/rd
 
       # Accumulate days since oxygen stress, but only if a crop is present
-      if (sm >= (SM0 - CRAIRC)){  # and self.in_crop_cycle:
+      if (sm >= (SM0 - CRAIRC)){
         DSOS<- DSOS + 1
       } else {
         DSOS<- 0

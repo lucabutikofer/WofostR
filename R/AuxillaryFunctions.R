@@ -444,14 +444,56 @@ dwn.crop<- function(cropName='potato', variety='Potato_701'){
 
 }
 
+#' Load crop parameters
+#'
+#' Load crop parameter files from locally stored yaml files
+#'
+#' @param cropName Character identifying the name of the crop to be
+#' downlowaded. See list on link above.
+#' @param variety Character.The variety name as mentioned in they yaml file
+#' on link above.
+#' @param crLocal Character vector. Path where all crop yaml files are stored.
+#' @return CropObject
+#' @export
+#'
+load.crop <- function(cropName='potato', variety='Potato_701',
+                      crLocal){
+
+  y<- yaml::read_yaml(paste0(crLocal, cropName, '.yaml'))
+
+  # Select variety
+  yv<- y[["CropParameters"]][["Varieties"]][[variety]]
+
+  # Reorganise list structure
+  yv0<- NULL
+  for(i in 1:length(yv)){
+    yv0[[i]]<- yv[[i]][[1]]
+  }
+  names(yv0)<- names(yv)
+
+  # Make matrixes out of afgen vectors
+  for (i in 1:length(yv0)){
+    if(length((yv0[[i]])) > 1){
+      yv0[[i]]<- make.afgen(yv0[[i]])
+    }
+  }
+
+  # Make CropObject
+  cr<- CropObject(yv0)
+  cr@CROPNAME<- cropName
+  cr@VARNAME<- variety
+
+  return(cr)
+
+}
+
 #' Subsets weather object
 #'
 #' Returns a section of the WeatherObject based on dates
-#' @ param obj WeatherObject
+#' @param obj weatherObject object to be subset.
 #' @param interval Either a vector of integers representing the indices of the
 #' days to extract or a vector of class="Date" and length=2 containing the
 #' initial and final date of the period to extract.
-#' @param obj weatherObject object to be subset.
 #' @return WeatherObject of the selected period
 #' @export
 #'
@@ -459,8 +501,15 @@ subsetObj <- function(obj, interval){
 
   # Convert dates into indices
   if (class(interval) == 'Date'){
-    interval1 <- which(w@DAY == interval[1])
-    interval2 <- which(w@DAY == interval[2])
+
+    # check that "interval" is within "obj"
+    if (min(obj@DAY) > min(interval) |
+        max(obj@DAY) < max(interval)){
+      stop('"interval" must be contained within "obj"')
+    }
+
+    interval1 <- which(as.character(obj@DAY) == as.character(interval[1]))
+    interval2 <- which(as.character(obj@DAY) == as.character(interval[2]))
     interval <- seq(interval1, interval2, 1)
   }
 
@@ -486,10 +535,85 @@ subsetObj <- function(obj, interval){
 
 }
 
+combineObj <- function(obj){
+
+  # obj: List of WeatherObjects
+
+  for(i in 1:length(obj)){ # for each WeatherObject in "obj"
+    if(i == 1){
+      tempObj <- obj[[i]]
+    } else {
+
+      tempObj@DAY <- c(tempObj@DAY, obj[[i]]@DAY)
+      tempObj@E0 <- c(tempObj@E0, obj[[i]]@E0)
+      tempObj@ELEV <- c(tempObj@ELEV, obj[[i]]@ELEV)
+      tempObj@ES0 <- c(tempObj@ES0, obj[[i]]@ES0)
+      tempObj@ET0 <- c(tempObj@ET0, obj[[i]]@ET0)
+      tempObj@IRRAD <- c(tempObj@IRRAD, obj[[i]]@IRRAD)
+      tempObj@LAT <- c(tempObj@LAT, obj[[i]]@LAT)
+      tempObj@LON <- c(tempObj@LON, obj[[i]]@LON)
+      tempObj@RAIN <- c(tempObj@RAIN, obj[[i]]@RAIN)
+      tempObj@SNOWDEPTH <- c(tempObj@SNOWDEPTH, obj[[i]]@SNOWDEPTH)
+      tempObj@TEMP <- c(tempObj@TEMP, obj[[i]]@TEMP)
+      tempObj@TMAX <- c(tempObj@TMAX, obj[[i]]@TMAX)
+      tempObj@TMIN <- c(tempObj@TMIN, obj[[i]]@TMIN)
+      tempObj@VAP <- c(tempObj@VAP, obj[[i]]@VAP)
+      tempObj@WIND <- c(tempObj@WIND, obj[[i]]@WIND)
+
+    }
+  }
+
+  return(tempObj)
+
+}
+
+manager.check <- function(managerObject){
+
+  mo <- managerObject
+  l <- c(length(mo@cropSequence), length(mo@cropStartType),
+         length(mo@cropStartDate), length(mo@cropFinish),
+         length(mo@spacing))
+
+  # Are all emlements of the same length?
+  if ((max(l) - min(l)) != 0){
+    stop(paste('"cropSequence", "cropStartType", "cropStartTypeDate"',
+               '"cropFinish" and "spacing"',
+               'must have the same length'))
+  }
+  if (is.null(mo@sequenceStart) | is.null(mo@sequenceFinish)){
+    stop('"sequenceStart" and "sequenceFinish" must be specified')
+  }
+
+}
 
 
+#' Plots the output of Wofost()
+#'
+#' Plots each output variable of function Wofost() in a single image
+#' @param out output of Wofost().
+#' @return Single plot
+#' @export
+#'
+plotWofost <- function(out){
 
+  # set new par() values.
+  l <- length(out)
+  if (round(sqrt(l)) == sqrt(l)){ # if l is a square number
+    op <- par(mfrow = c(sqrt(l), sqrt(l)))
+    on.exit(par(op, no.readonly = T))
+  } else {
+    op <- par(mfrow = c(round(sqrt(l)), round(sqrt(l)) + 1))
+    on.exit(par(op,no.readonly = T))
+  }
 
+  # print all variables in "out"
+  for (i in 1:l){
+    plot(out[[i]], type='l', col = 4, lwd = 2,
+         xlab = 'Days from sowing',
+         ylab = names(out)[i],
+         main = names(out)[i])
+  }
+}
 
 
 

@@ -149,6 +149,8 @@ setMethod(f='TestCropObject', signature='list',
 
 # >> EXPORTED, DOCUMENTED METHODS AND CLASSES ####
 
+# > CROP OBJECT ####
+
 # CropObject class definition #####
 #' S4 Class "CropObject"
 #'
@@ -391,6 +393,7 @@ setMethod(f='CropObject', signature='list',
           }
 )
 
+# > WEATHER OBJECT ####
 
 # WeatehrObject class definition ####
 #' S4 Class "WeatherObject"
@@ -444,6 +447,10 @@ setMethod('show', 'WeatherObject',
             rownames(out)<- 1:length(slotNames(object))
 
             cat('\n', 'WofostR Weather Object:', '\n', '\n')
+            cat(' >>', 'From date:',
+                as.character(min(object@DAY)), '\n')
+            cat(' >>', 'To date:',
+                as.character(max(object@DAY)), '\n', '\n')
             print(out,quote=F)
             cat('\n')
           }
@@ -481,6 +488,8 @@ setMethod(f='WeatherObject', signature='list',
           }
 )
 
+
+# > SOIL OBJECT ####
 
 # SoilObject class definition #####
 #' S4 Class "SoilObject"
@@ -588,3 +597,195 @@ setMethod(f='SoilObject', signature='list',
             )
           }
 )
+
+
+# > MANAGER OBJECT ####
+
+# ManagerObject class definition #####
+#' S4 Class "ManagerObject"
+#'
+#' Contains managements instructions
+#'
+#' @param  cropVarSequence: Character vector containing the names of the
+#' crop varieties in the desired succession. Must be in the format
+#' "cropName-varName". Type "cropVarList" for a list of crop and variety names.
+#' @param cropStartTypes: Character vector of same length as cropSequence
+#' containing the crop start type (i.e. "sowing" or "emergence")
+#' @param cromStartDate: Character vecotr of same length as croRotation
+#' containing start Dates for each crop. The first element is ignored and
+#' the first crop will start at "sequenceStart".
+#' @param cropFinish: Character vector of same length as cropRotation containing
+#' either a crop stage (e.g. "maturity") or a date in the format "YYYY/MM/DD".
+#' Where specified, date will take priority over corp stage and can be used to
+#' regulate long rotation series.
+#' @param spacing: Numeric vector of same lenaght as cropSequence.
+#' number of days after previous step when new crop is started.
+#' The first crop will be started spacing[1] days after sequenceStart.
+#' In most cases spacing[1] = 0.
+#' @importFrom methods new slot slotNames
+#'
+#' @export ManagerObject
+#'
+#' @example
+#' ManagerObject(
+#'   cropSequence = c(
+#'     'barley-Spring_barley_301',
+#'     'millet-Millet_VanHeemst_1988',
+#'     'maize-Grain_maize_201'),
+#'   sequenceStart = '2010/04/16',
+#'   sequenceFinish = '2012/01/01',
+#'   cropStartType = c('sowing', 'sowing', 'sowing'),
+#'   cropStartDate = c(NA, '2011/04/16', NA),
+#'   cropFinish = c('maturity','2011/05/16','maturity'),
+#'   spacing = c(0, NA, 10 )
+#' )
+
+#'
+ManagerObject <- setClass('ManagerObject', slots = c(
+
+  'cropSequence',
+  'sequenceStart',
+  'sequenceFinish',
+  'cropStartType',
+  'cropStartDate',
+  'cropFinish',
+  'spacing'
+
+))
+
+
+# show() method for ManagerObject class ####
+#' S4 Method for generic "show()", ManagerObject
+#'
+#' Prints a summary of the manager object when typed or when
+#' "show(object_name)" is called
+#' @param object ManagerObject S4 object
+#' @export
+#'
+setMethod('show', 'ManagerObject',
+          function(object){
+            cat('\n', 'WofostR Manager Object:', '\n')
+            cat(' >>', 'Starting sequence:', object@sequenceStart, '\n')
+            cat(' >>','Finishing sequence:', object@sequenceFinish, '\n')
+            cat(' >>','Crop rotation:','\n','\n')
+            print(cbind('Crops' = object@cropSequence,
+                        'Start_types' = object@cropStartType,
+                        'Start_dates' = object@cropStartDate,
+                        'Finish' = object@cropFinish,
+                        'Spacing' = object@spacing),
+                  quote = FALSE, row_numbers = FALSE)
+          }
+)
+
+
+# > SIMULATION OBJECT ####
+
+# SimulationObject class definition #####
+#' S4 Class "SimulationObject"
+#'
+#' Contains the output of function Wofost()
+#' @param description: Dataframe containing metadata of the simulation
+#' @param variables: List of length equal to nrow("description") containing
+#' the output variables. Each top level element of "variables" represents a
+#' crop.
+#'
+#' @importFrom methods new slot slotNames
+#'
+#' @export ManagerObject
+#'
+#' @example
+#'
+SimulationObject <- setClass('SimulationObject', slots = c(
+
+  'description',
+  'variables'
+
+))
+
+
+# show() method for SimulationObject class ####
+#' S4 Method for generic "show()", SimulationObject
+#'
+#' Prints a summary of the manager object when typed or when
+#' "show(object_name)" is called
+#' @param object SimulationObject S4 object
+#' @export
+#'
+setMethod('show', 'SimulationObject',
+          function(object){
+            cat('\n', 'WofostR Simulation Object:', '\n', '\n')
+            print(object@description,
+                  quote = FALSE)
+            cat('\n', '\n')
+          }
+)
+
+# plot() method for SimulationObject class ####
+#' S4 Method for generic "plot()", SimulationObject
+#'
+#' Plots an overview of the output of function Wofost
+#' @param x SimulationObject S4 object
+#' @param var Character vector of variable names that will be plotted.
+#' @export
+#'
+setMethod('plot', 'SimulationObject',
+          function(x, var = 'twso'){
+
+    if (nrow(x@description) > 1){ # if SimulationObject contains multiple
+                                  # simulations
+
+      # set new par() values.
+      l <- nrow(x@description) * length(var)
+      if (l < 4){
+        op <- par(mfrow = c(1, l))
+        on.exit(par(op,no.readonly = T))
+      } else if (round(sqrt(l)) == sqrt(l)){ # if l is a square number
+        op <- par(mfrow = c(sqrt(l), sqrt(l)))
+        on.exit(par(op, no.readonly = T))
+      } else {
+        op <- par(mfrow = c(round(sqrt(l)), round(sqrt(l)) + 1))
+        on.exit(par(op,no.readonly = T))
+      }
+
+      for (i in 1:nrow(x@description)){ # for each crop
+        time <- seq(x@description$startDate[i],
+                    x@description$finishDate[i],
+                    1)
+        for (v in 1:length(var)){ # for each variable in "var"
+          ind <- which(names(x@variables[[i]]) == var[v])
+          plot(time, x@variables[[i]][ind][[1]],
+               type='l', col = 4, lwd = 2,
+               xlab = 'Date',
+               ylab = var[v],
+               main = names(x@variables)[i])
+        }
+      }
+    } else { # if SimulationObject contains a single crop
+
+      # set new par() values.
+      l <- length(x@variables[[1]])
+      if (l < 4){
+        op <- par(mfrow = c(1, l))
+        on.exit(par(op,no.readonly = T))
+      } else if (round(sqrt(l)) == sqrt(l)){ # if l is a square number
+        op <- par(mfrow = c(sqrt(l), sqrt(l)))
+        on.exit(par(op, no.readonly = T))
+      } else {
+        op <- par(mfrow = c(round(sqrt(l)), round(sqrt(l)) + 1))
+        on.exit(par(op,no.readonly = T))
+      }
+
+      time <- seq(x@description$startDate[1],
+                  x@description$finishDate[1],
+                  1)
+      for (i in 1:l){
+        plot(time, x@variables[[1]][[i]],
+             type='l', col = 4, lwd = 2,
+             xlab = 'Date',
+             ylab = names(x@variables[[1]])[i]
+             )
+      }
+    }
+  }
+)
+

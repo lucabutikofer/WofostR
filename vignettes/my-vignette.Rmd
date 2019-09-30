@@ -62,7 +62,7 @@ str(cr, list.len = 2)
 Weather objects must contain minimum and maximum temperature, radiation and latitude at daily time-steps starting from the day the model is started. An example weather object is saved in the package.
 
 ```{r}
-load('../data/randomWeather.rda')
+data(randomWeather, package = "WofostR")
 randomWeather
 str(randomWeather, list.len = 2)
 ```

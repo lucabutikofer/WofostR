@@ -12,5 +12,6 @@ winSelectCrops(gw)
 \description{
 Takes the output of growingWindow() and returns a selection of
 crop/varieties that reached maturity with their corresponding sowing
-dates. This is useful for running WofostXX() on those.
+dates. This is useful for running Wofost on those with function
+"winSelectWofost()".
 }
