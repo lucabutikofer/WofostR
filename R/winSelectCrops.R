@@ -55,7 +55,8 @@ winSelectWofost <- function(gwOut, w, s,
   }
 
   # Make directory for output
-  dir.create('../WofostOutput')
+  outDir <- paste0('../WofostOutput_', min(w@DAY), '_', max(w@DAY))
+  dir.create(outDir)
 
   # Create progress bar
   pb <- txtProgressBar(min = 1, max = n, style = 3)
@@ -87,9 +88,16 @@ winSelectWofost <- function(gwOut, w, s,
       #                         finishType = "maturity")
 
       # print(paste(cnm, vnm, count, i , j))
-      out[[j]] <- WofostFD(crop = cro, w = sw, soil = s,
-                                startType = "sowing",
-                                finishType = "maturity")
+      if(cnm == 'tobacco'){ # Tobacco require start at emergence
+                            # Will need to fix this in Wofost()
+        out[[j]] <- WofostFD(crop = cro, w = sw, soil = s,
+                             startType = "emergence",
+                             finishType = "maturity")
+      } else {
+        out[[j]] <- WofostFD(crop = cro, w = sw, soil = s,
+                                  startType = "sowing",
+                                  finishType = "maturity")
+      }
       names(out)[j] <- as.character(st)
 
       # Update progress bar
@@ -98,8 +106,12 @@ winSelectWofost <- function(gwOut, w, s,
       count <- count + 1
 
     }
-    saveRDS(out, paste0('../WofostOutput/',
+
+    # Save crop output
+    saveRDS(out, paste0(outDir, '/',
                         nm[[i]][1], '_', nm[[i]][2],
                         '.rds'))
+    out <- NULL
+
   }
 }
