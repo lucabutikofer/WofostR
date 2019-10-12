@@ -38,11 +38,13 @@ winSelectCrops <- function(gw){
 #' the path where all crop yaml files are stored.
 #' @param waterLimited Logical. If FALSE (default) runs potential production.
 #' If TRUE, free draining water-limited production.
+#' @param outDir Directory path (to be created) where the output is saved.
 #'
 #' @export
 #'
 winSelectWofost <- function(gwOut, w, s,
-                            crLocal = NULL, waterLimited = FALSE){
+                            crLocal = NULL, waterLimited = FALSE,
+                            outDir = ''){
 
   # Names of corps and varieties
   nm <- names(gwOut)
@@ -55,8 +57,8 @@ winSelectWofost <- function(gwOut, w, s,
   }
 
   # Make directory for output
-  outDir <- paste0('../WofostOutput_', min(w@DAY), '_', max(w@DAY))
-  dir.create(outDir)
+  outDir <- paste0(outDir, '/WofostOutput_', min(w@DAY), '_', max(w@DAY))
+  dir.create(outDir, recursive = T)
 
   # Create progress bar
   pb <- txtProgressBar(min = 1, max = n, style = 3)
