@@ -26,6 +26,7 @@
 #' reached - or
 #' an integer [1:365] -Maximum number of days for which the model is run.
 #' Ignored if "manager" is specified.
+#'
 #' @param cropDir Character vector containing the directory where crop files
 #' are stored as .yaml files. If not specified and a CropObject is not
 #' assigned to parameter "crop", crop files will be downloaded from
@@ -34,7 +35,15 @@
 #' Potentially, any of the variables produced inside the Wofost function
 #' can be returned. However the use of carReturn = NULL (default) is
 #' encouraged. By default returning variables described in "Returns".
-#'
+#' @param activate.verndvs Logical. If TRUE, allows the use of variable
+#' "VERNDVS". A critical development stage (VERNDVS) is used to stop the effect
+#' of vernalisation when this DVS is reached. This is done to improve model
+#' stability in order to avoid that Anthesis is never reached due to a
+#' somewhat too high VERNSAT. Nevertheless, a warning is written to the log
+#' file, if this happens.
+#' @param activate.stopInSeven Logical. If TRUE, the simulation stops seven
+#' days after maturity is reached. If FALSE, the simulation terminates when
+#' maturity is reached. Ignored if "finishType" is numeric.
 #' @export
 #'
 #' @examples
@@ -60,6 +69,8 @@ Wofost<- function(
   waterLimited = FALSE,
   startType= 'sowing',
   finishType= 'maturity',
+  activate.verndvs= TRUE,
+  activate.stopInSeven= FALSE,
   cropDir= NULL,
   varReturn= NULL
 ){
@@ -181,15 +192,22 @@ Wofost<- function(
   } else if (is.null(manager)){
     # RUN WOFOST
     if (!isTRUE(waterLimited)){  # potential production
+
       OUT <- WofostPP(crop = crop, w = w,
                            varReturn = varReturn,
                            startType = startType,
-                           finishType = finishType)
+                           finishType = finishType,
+                           activate.verndvs= TRUE,
+                           activate.stopInSeven= FALSE)
+
     } else if (isTRUE(waterLimited)){  # water-limited production
+
       OUT <- WofostFD(crop = crop, w = w, soil = soil,
                            varReturn = varReturn,
                            startType = startType,
-                           finishType = finishType)
+                           finishType = finishType,
+                           activate.verndvs= TRUE,
+                           activate.stopInSeven= FALSE)
     }
     OUT <- list(OUT)
     names(OUT) <- paste0(crop@CROPNAME, '_', as.character(w@DAY[1]))

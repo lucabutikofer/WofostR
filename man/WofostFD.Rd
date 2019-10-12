@@ -5,7 +5,8 @@
 \title{Wofost Free-Draining, Water-Limited Production}
 \usage{
 WofostFD(crop, w, soil, startType = "sowing", finishType = "maturity",
-  varReturn = NULL)
+  varReturn = NULL, activate.verndvs = TRUE,
+  activate.stopInSeven = FALSE)
 }
 \arguments{
 \item{crop}{CorpObject. Object of class CropObject containing the specific
@@ -22,14 +23,25 @@ Either "sowing" or "emergence".}
 
 \item{finishType}{Variable describing the conditionst triggering
 the end of the simulation.
-Can be either "maturity" -The model is terminated 7 days after maturity is
-reached - or
-an integer [1:365] -Maximum number of days for which the model is run.}
+Can be either "maturity" -The model is terminated at - or 7 days after -
+maturity is reached, or an integer [1:365] representing the maximum
+number of days for which the model is run.}
 
 \item{varReturn}{Character vector specifying which variables to output.
 Potentially, any of the variables produced inside the Wofost function
 can be returned. However the use of carReturn = NULL (default) is
 encouraged. By default returning variables described in "Returns".}
+
+\item{activate.verndvs}{Logical. If TRUE, allows the use of variable
+"VERNDVS". A critical development stage (VERNDVS) is used to stop the effect
+of vernalisation when this DVS is reached. This is done to improve model
+stability in order to avoid that Anthesis is never reached due to a
+somewhat too high VERNSAT. Nevertheless, a warning is written to the log
+file, if this happens.}
+
+\item{activate.stopInSeven}{Logical. If TRUE, the simulation stops seven
+days after maturity is reached. If FALSE, the simulation terminates when
+maturity is reached. Ignored if "finishType" is numeric.}
 }
 \description{
 Computes water-limited production on freely draining soils with not

@@ -16,7 +16,8 @@
 #' @export
 #'
 growingWindow <- function(crop = "potato", variety = "Potato_701",
-                          w, allVar = FALSE, crLocal = NULL){
+                          w, allVar = FALSE, crLocal = NULL,
+                          activate.verndvs= FALSE){
 
   # Add "/" at the end of "crLocal" if specified and not ending in "/" already
   if (!is.null(crLocal)){
@@ -26,17 +27,18 @@ growingWindow <- function(crop = "potato", variety = "Potato_701",
   }
 
   # Run "growingWindowAll" if "allVar==TRUE"
-  if (isTRUE(allVar)){out <- growingWindowAll(w, crLocal)}
+  if (isTRUE(allVar)){out <- growingWindowAll(w, crLocal, activate.verndvs)}
 
   # Run "growingWindowONE" if "allVar==FALSE"
-  if (isFALSE(allVar)){out <- growingWindowOne(crop, variety, w, crLocal)}
+  if (isFALSE(allVar)){out <- growingWindowOne(crop, variety, w, crLocal,
+                                               activate.verndvs)}
 
   return(out)
 
 }
 
 
-growingWindowAll <- function(w, crLocal){
+growingWindowAll <- function(w, crLocal, activate.verndvs){
 
   # Create progress bar
   pb <- txtProgressBar(min = 1, max = nrow(cropVarList), style = 3)
@@ -47,7 +49,7 @@ growingWindowAll <- function(w, crLocal){
     crop <- as.character(cropVarList$crop[i])
     variety <- as.character(cropVarList$variety[i])
 
-    outAll[[i]] <- growingWindowOne(crop, variety, w, crLocal)
+    outAll[[i]] <- growingWindowOne(crop, variety, w, crLocal, activate.verndvs)
 
     # Update progress bar
     setTxtProgressBar(pb, i)
@@ -62,7 +64,7 @@ growingWindowAll <- function(w, crLocal){
 }
 
 
-growingWindowOne <- function(crop, variety, w, crLocal){
+growingWindowOne <- function(crop, variety, w, crLocal, activate.verndvs){
 
 
   #=================#
@@ -116,7 +118,8 @@ growingWindowOne <- function(crop, variety, w, crLocal){
     # Run phenology module
     phen[[i]] <- Phenology (crop = cr, w = wsub,
                        startType= 'sowing',
-                       finishType= 'maturity'
+                       finishType= 'maturity',
+                       activate.verndvs= activate.verndvs
                        )
   }
 

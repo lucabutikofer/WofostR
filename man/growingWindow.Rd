@@ -5,7 +5,7 @@
 \title{Find growing window}
 \usage{
 growingWindow(crop = "potato", variety = "Potato_701", w,
-  allVar = FALSE, crLocal = NULL)
+  allVar = FALSE, crLocal = NULL, activate.verndvs = FALSE)
 }
 \arguments{
 \item{crop}{Character identifying the name of the crop to be

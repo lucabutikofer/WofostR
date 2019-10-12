@@ -10,23 +10,34 @@
 #' driving variables. See ?WeatherObject.
 #' @param startType Development stage at which the simulation is started.
 #' Either "sowing" or "emergence".
-#' @param finishType Variable describing the conditionst riggering
+#' @param finishType Variable describing the conditionst triggering
 #' the end of the simulation.
-#' Can be either "maturity" -The model is terminated 7 days after maturity is
-#' reached - or
-#' an integer [1:365] -Maximum number of days for which the model is run.
+#' Can be either "maturity" -The model is terminated at - or 7 days after -
+#' maturity is reached, or an integer [1:365] representing the maximum
+#' number of days for which the model is run.
 #' @param varReturn Character vector specifying which variables to output.
 #' Potentially, any of the variables produced inside the Wofost function
 #' can be returned. However the use of carReturn = NULL (default) is
 #' encouraged. By default returning variables described in "Returns".
-#'
+#' @param activate.verndvs Logical. If TRUE, allows the use of variable
+#' "VERNDVS". A critical development stage (VERNDVS) is used to stop the effect
+#' of vernalisation when this DVS is reached. This is done to improve model
+#' stability in order to avoid that Anthesis is never reached due to a
+#' somewhat too high VERNSAT. Nevertheless, a warning is written to the log
+#' file, if this happens.
+#' @param activate.stopInSeven Logical. If TRUE, the simulation stops seven
+#' days after maturity is reached. If FALSE, the simulation terminates when
+#' maturity is reached. Ignored if "finishType" is numeric.
 #' @export
 #'
 WofostPP<- function(
   crop, w,
   startType= 'sowing',
   finishType= 'maturity',
-  varReturn= NULL
+  varReturn= NULL,
+  activate.verndvs= TRUE,
+  activate.stopInSeven= FALSE
+
 ){
 
   # CROP PARAMETERS ####
@@ -49,9 +60,9 @@ WofostPP<- function(
   # SMW = crop@SMW  # Soil
   # SM0 = crop@SM0  # Soil
   # SMFCF = crop@SMFCF  # Soil
-  # RDMSOL = crop@RDMSOL  # Soil
+  RDMSOL = 100  # Max rootable soil depth would be from SoilObject
+                # but only affect the water balance, so is set to 1m here.
 
-  RDMSOL=100 # TEMPORARY!! THIS NEEDS TO BE PROVIDED IN SOIL OBJECT !!!
   crop_start_type = startType
   AMAXTB = crop@AMAXTB
   CFET = crop@CFET
@@ -179,6 +190,8 @@ WofostPP<- function(
       isvernalised<- FALSE
       force_vernalisation<- FALSE
       dov<- NULL # date of vernalisation
+      vernalisation.warning<- "on" # switch ensuring the vernalisation warning
+                                   # is printed only once
 
       # Initialise nighttime 7 days running minimum temperature
       tmins<- NULL
@@ -305,6 +318,12 @@ WofostPP<- function(
     # > RATES COMPUTATIONS ####
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+    # Stop if WeatherObject is too short
+    if (t > length(w@DAY)){
+      stop(paste0('Reached last day of WeatherObject (', w@DAY[t],
+                  ') but "finishType" condition not reached yet (dvs = ',
+                  dvs, '"finishType" value = ', t,'/', finishType,').'))
+    }
 
     # >> TEMPERATURE ####
 
@@ -327,24 +346,29 @@ WofostPP<- function(
 
     # Vernalisation
     vernfac<- 1
-    if (IDSL >= 2){
+    if (IDSL >= 2){ # if pre-anthesis development depends on daylength
+      # and vernalisation
+      vernfac<- 0
       if (stage == 'vegetative'){
-        # here starts PCSE's "vernalisation.calc_rates"..................#|
-        if (isFALSE(isvernalised)){                                      #|
-          if (dvs < VERNDVS){ # Vernalisation requirements reached.      #|
-            vernr<- afgen(temp,VERNRTB)                                  #|
-            r<- (vern - VERNBASE)/(VERNSAT - VERNBASE)                   #|
-            vernfac<- limit(0, 1, r)                                     #|
-          } else {                                                       #|
-            vernr<- 0                                                    #|
-            vernfac<- 1                                                  #|
-            force_vernalisation<- TRUE                                   #|
-          }                                                              #|
-        } else {                                                         #|
-          vernr<- 0                                                      #|
-          vernfac<- 1                                                    #|
-        }                                                                #|
-        # here finishes PCSE's "vernalisation.calc_rates"................#|
+        if (isFALSE(isvernalised)){
+          # if vernalisation requirements not reached yet
+          if (dvs < VERNDVS){
+            vernr<- afgen(temp,VERNRTB)
+            r<- (vern - VERNBASE)/(VERNSAT - VERNBASE)
+            vernfac<- limit(0, 1, r)
+          } else if (isTRUE(activate.verndvs)){
+            vernr<- 0
+            vernfac<- 1
+            force_vernalisation<- TRUE
+          } else if (isFALSE(activate.verndvs)){
+            vernr<- afgen(temp,VERNRTB)
+            r<- (vern - VERNBASE)/(VERNSAT - VERNBASE)
+            vernfac<- limit(0, 1, r)
+          }
+        } else { # if vernalisation requirement are fullfilled
+          vernr<- 0
+          vernfac<- 1
+        }
       }
     }
 
@@ -513,11 +537,16 @@ WofostPP<- function(
 
     if(finishType == 'maturity'){ # finishType = 'maturity'
       if (stopInSeven == 0) {STOP<- TRUE}
-    } else if (class(finishType) == 'numeric'){
+
+    } else if (class(finishType) == 'numeric' | # finishType = No. of days
+               class(finishType) == 'integer'){
       if (t == finishType) {STOP<- TRUE}
+
     } else { # Problem: unacceptable finishType
+
       stop('"finishType" must be either "maturity" or an integer.
            See ?Wofost')
+
     }
 
     if (isFALSE(STOP)){ # continue only if finish conditions are
@@ -575,25 +604,27 @@ WofostPP<- function(
       # Integrate vernalisation module
       if (IDSL >= 2){
         if (stage == 'vegetative'){
-          # here starts PCSE's "vernalisation.integrate".................#|
-          vern<- vern + vernr                                            #|
-          if (vern >= VERNSAT){  # Vernalisation requirements reached    #|
-            isvernalised<- TRUE                                          #|
-            if (is.null(dov)){                                           #|
-              dov<- t                                                    #|
-            }                                                            #|
-          } else if (isTRUE(force_vernalisation)){                       #|
-            isvernalised<- TRUE                                          #|
-            warning(paste0(                                              #|
-              'Critical DVS for vernalisation (VERNDVS) reached
-             at day ',t,
-              ' but vernalisation requirements not yet fulfilled.',
-              'forcing vernalisation now (vern= ',vern,').'))
-          } else {                                                       #|
-            isvernalised<- FALSE                                         #|
-          }                                                              #|
-        }                                                                #|
-        # here finishes PCSE's "vernalisation.integrate".................#|
+          vern<- vern + vernr
+          if (vern >= VERNSAT){  # Vernalisation requirements reached
+            isvernalised<- TRUE
+            if (is.null(dov)){
+              dov<- w@DAY[t]
+            }
+          } else if (isTRUE(force_vernalisation)){
+            isvernalised<- TRUE
+            if (vernalisation.warning == 'on'){
+              warning(paste0(
+                'Critical DVS for vernalisation (VERNDVS) reached at day ',
+                w@DAY[t],
+                ' but vernalisation requirements not yet fulfilled.','\n',
+                'Forcing vernalisation now (vern/VERNSAT = ',
+                round(vern), '/', VERNSAT,').'))
+            }
+            vernalisation.warning <- 'off' # switch of the warning
+          } else {
+            isvernalised<- FALSE
+          }
+        }
       }
 
       # Integrate phenologic states
@@ -619,7 +650,10 @@ WofostPP<- function(
         }
       }
       else if (stage == 'mature'){
-        stopInSeven<- stopInSeven - 1
+        if (isTRUE(activate.stopInSeven)){
+          stopInSeven<- stopInSeven - 1
+        } else {stopInSeven<- 0}
+
       } else { # Problem: no stage defined
         stop("No 'stage' defined in phenology submodule")
       }

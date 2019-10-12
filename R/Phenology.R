@@ -14,13 +14,20 @@
 #' Can be either "maturity" -The model is terminated 7 days after maturity is
 #' reached - or
 #' an integer [1:365] -Maximum number of days for which the model is run.
-#'
+#' @param activate.verndvs Logical. If TRUE, allows the use of variable
+#' "VERNDVS". A critical development stage (VERNDVS) is used to stop the effect
+#' of vernalisation when this DVS is reached. This is done to improve model
+#' stability in order to avoid that Anthesis is never reached due to a
+#' somewhat too high VERNSAT. Nevertheless, a warning is written to the log
+#' file, if this happens.
+
 #' @export
 #'
 Phenology<- function(
   crop, w,
   startType= 'sowing',
-  finishType= 'maturity'
+  finishType= 'maturity',
+  activate.verndvs= TRUE
 ){
 
   crop_start_type = startType
@@ -58,7 +65,7 @@ Phenology<- function(
   vernfacNF_out<- NULL
 
   # Helper variables
-  stopInSeven<- 7
+  stopInSeven<- 1
   vernr<- 0
 
   # LOOP STARTS ####
@@ -80,6 +87,7 @@ Phenology<- function(
       force_vernalisation<- FALSE
       dov<- NULL # date of vernalisation
       vernfacNF<- 0
+      vernalisation.warning <- 'on'
 
       # Define initial stage type (emergence/sowing)
       if (crop_start_type == "emergence"){
@@ -113,30 +121,33 @@ Phenology<- function(
 
     # Vernalisation
     vernfac<- 1
-    if (IDSL >= 2){
+    if (IDSL >= 2){ # if pre-anthesis development depends on daylength
+                    # and vernalisation
       vernfac<- 0
       if (stage == 'vegetative'){
-        # here starts PCSE's "vernalisation.calc_rates"..................#|
-        if (isFALSE(isvernalised)){                                      #|
-          if (dvs < VERNDVS){                                            #|
-            vernr<- afgen(temp,VERNRTB)                                  #|
-            r<- (vern - VERNBASE)/(VERNSAT - VERNBASE)                   #|
-            vernfac<- limit(0, 1, r)                                     #|
+        if (isFALSE(isvernalised)){
+          # if vernalisation requirements not reached yet
+          if (dvs < VERNDVS){
+            vernr<- afgen(temp,VERNRTB)
+            r<- (vern - VERNBASE)/(VERNSAT - VERNBASE)
+            vernfac<- limit(0, 1, r)
             vernfacNF<- vernfac
-          } else {                                                       #|
-            vernr<- 0                                                    #|
-            vernfac<- 1                                                  #|
-            if(isFALSE(force_vernalisation)){                            #|
-              force_vernalisation<- TRUE                                 #|
-            }                                                            #|
-          }                                                              #|
-        } else {                                                         #|
-          vernr<- 0                                                      #|
-          vernfac<- 1                                                    #|
-        }                                                                #|
-        # here finishes PCSE's "vernalisation.calc_rates"................#|
+          } else if (isTRUE(activate.verndvs)){
+            vernr<- 0
+            vernfac<- 1
+            force_vernalisation<- TRUE
+          } else if (isFALSE(activate.verndvs)){
+            vernr<- afgen(temp,VERNRTB)
+            r<- (vern - VERNBASE)/(VERNSAT - VERNBASE)
+            vernfac<- limit(0, 1, r)
+          }
+        } else { # if vernalisation requirement are fullfilled
+          vernr<- 0
+          vernfac<- 1
+        }
       }
     }
+
 
     # Development rates
     if (stage == "emerging"){
@@ -206,30 +217,29 @@ Phenology<- function(
       # Integrate vernalisation module
       if (IDSL >= 2){
         if (stage == 'vegetative'){
-          # here starts PCSE's "vernalisation.integrate".................#|
-          vern<- vern + vernr                                            #|
-          if (vern >= VERNSAT){  # Vernalisation requirements reached    #|
-            isvernalised<- TRUE                                          #|
-            if (is.null(dov)){                                           #|
-              dov<- t                                                    #|
-            }                                                            #|
-          } else if (isTRUE(force_vernalisation)){                       #|
-            isvernalised<- TRUE                                          #|
-            warning(paste0(                                              #|
-              '\n', crop@VARNAME, ':\n',
-              'Critical DVS for vernalisation (VERNDVS) reached at day ',
-              t,
-              ', but vernalisation requirements not yet fulfilled.', '\n',
-              'Forcing vernalisation now.', '\n',
-              'VERN: ', round(vern, digits = 2), '\n'
-              ))
-            force_vernalisation <- 'OFF'
-          } else {                                                       #|
-            isvernalised<- FALSE                                         #|
-          }                                                              #|
-        }                                                                #|
-        # here finishes PCSE's "vernalisation.integrate".................#|
+          vern<- vern + vernr
+          if (vern >= VERNSAT){  # Vernalisation requirements reached
+            isvernalised<- TRUE
+            if (is.null(dov)){
+              dov<- w@DAY[t]
+            }
+          } else if (isTRUE(force_vernalisation)){
+            isvernalised<- TRUE
+            if (vernalisation.warning == 'on'){
+              warning(paste0(
+                'Critical DVS for vernalisation (VERNDVS) reached at day ',
+                w@DAY[t],
+                ' but vernalisation requirements not yet fulfilled.','\n',
+                'Forcing vernalisation now (vern/VERNSAT = ',
+                round(vern), '/', VERNSAT,').'))
+            }
+            vernalisation.warning <- 'off' # switch of the warning
+          } else {
+            isvernalised<- FALSE
+          }
+        }
       }
+
 
       # Integrate phenologic states
       tsume<- tsume + dtsume

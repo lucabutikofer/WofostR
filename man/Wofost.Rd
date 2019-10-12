@@ -6,7 +6,8 @@
 \usage{
 Wofost(w, crop = NULL, soil = NULL, manager = NULL,
   waterLimited = FALSE, startType = "sowing",
-  finishType = "maturity", cropDir = NULL, varReturn = NULL)
+  finishType = "maturity", activate.verndvs = TRUE,
+  activate.stopInSeven = FALSE, cropDir = NULL, varReturn = NULL)
 }
 \arguments{
 \item{w}{WeatherObject. Object of class CropObject containing the climatic
@@ -35,6 +36,17 @@ Can be either "maturity" -The model is terminated 7 days after maturity is
 reached - or
 an integer [1:365] -Maximum number of days for which the model is run.
 Ignored if "manager" is specified.}
+
+\item{activate.verndvs}{Logical. If TRUE, allows the use of variable
+"VERNDVS". A critical development stage (VERNDVS) is used to stop the effect
+of vernalisation when this DVS is reached. This is done to improve model
+stability in order to avoid that Anthesis is never reached due to a
+somewhat too high VERNSAT. Nevertheless, a warning is written to the log
+file, if this happens.}
+
+\item{activate.stopInSeven}{Logical. If TRUE, the simulation stops seven
+days after maturity is reached. If FALSE, the simulation terminates when
+maturity is reached. Ignored if "finishType" is numeric.}
 
 \item{cropDir}{Character vector containing the directory where crop files
 are stored as .yaml files. If not specified and a CropObject is not
