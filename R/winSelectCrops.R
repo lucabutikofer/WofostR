@@ -57,7 +57,8 @@ winSelectWofost <- function(gwOut, w, s,
   }
 
   # Make directory for output
-  outDir <- paste0(outDir, '/WofostOutput_', min(w@DAY), '_', max(w@DAY))
+  outDir <- paste0('/WofostOutput_', min(w@DAY), '_', max(w@DAY),
+                   '_', outDir)
   dir.create(outDir, recursive = T)
 
   # Create progress bar
