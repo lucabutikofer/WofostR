@@ -562,7 +562,7 @@ setMethod('show', 'SoilObject',
             }
             fs<-sum(es) # full slots
             cat('\n', 'WofostR Soil Object:', '\n')
-            cat('>>',fs, 'soil parameters out of',
+            cat(' >>',fs, 'soil parameters out of',
                 length(slotNames(object)),
                 'are specified.','\n', '\n')
           }
@@ -691,7 +691,7 @@ setMethod('show', 'ManagerObject',
 #'
 #' @importFrom methods new slot slotNames
 #'
-#' @export ManagerObject
+#' @export SimulationObject
 #'
 #' @example
 #'

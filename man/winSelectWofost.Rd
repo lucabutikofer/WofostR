@@ -4,7 +4,8 @@
 \alias{winSelectWofost}
 \title{Runs wofost for winSelectCrops() output}
 \usage{
-winSelectWofost(gwOut, w, s, crLocal = NULL, waterLimited = FALSE)
+winSelectWofost(gwOut, w, s, crLocal = NULL, waterLimited = FALSE,
+  outDir = "")
 }
 \arguments{
 \item{gwOut}{Selected crops as outputted from winSelectCrops().}
@@ -19,6 +20,8 @@ the path where all crop yaml files are stored.}
 
 \item{waterLimited}{Logical. If FALSE (default) runs potential production.
 If TRUE, free draining water-limited production.}
+
+\item{outDir}{Directory path (to be created) where the output is saved.}
 }
 \description{
 Takes the output of winSelectCrops() and runs a Wofost() run for each

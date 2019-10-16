@@ -399,9 +399,9 @@ WofostFD<- function(
 
     # Stop if WeatherObject is too short
     if (t > length(w@DAY)){
-      stop(paste0('Reached last day of WeatherObject (', w@DAY[t],
+      stop(paste0('Reached last day of WeatherObject (', w@DAY[t-1],
                   ') but "finishType" condition not reached yet (dvs = ',
-                  dvs, '"finishType" value = ', t,'/', finishType,').'))
+                  round(dvs), ', "finishType" set to "', finishType,'").'))
     }
 
     # >> TEMPERATURE ####
@@ -671,7 +671,7 @@ WofostFD<- function(
       RINPRE<- (1 - NOTINF)*RAIN[t]
     } else {
       # infiltration is function of storm size (NINFTB)
-      RINPRE<- (1 - NOTINF*NINFTB(RAIN[t]))*RAIN[t]
+      RINPRE<- (1 - NOTINF*afgen(RAIN[t], NINFTB))*RAIN[t]
     }
 
     # Second stage preliminary infiltration rate (RINPRE)

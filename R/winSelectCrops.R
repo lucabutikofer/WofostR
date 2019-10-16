@@ -89,15 +89,15 @@ winSelectWofost <- function(gwOut, w, s,
       # Run Wofost waterlimited production
       if(cnm == 'tobacco'){ # Tobacco require start at emergence
                             # Will need to fix this in Wofost()
-        out[[j]] <- WofostFD(crop = cro, w = sw, soil = s,
+        out[[j]] <- try(WofostFD(crop = cro, w = sw, soil = s,
                              startType = "emergence",
                              finishType = "maturity",
-                             activate.verndvs = F)
+                             activate.verndvs = F), silent = T)
       } else {
-        out[[j]] <- WofostFD(crop = cro, w = sw, soil = s,
+        out[[j]] <- try(WofostFD(crop = cro, w = sw, soil = s,
                            startType = "sowing",
                            finishType = "maturity",
-                           activate.verndvs = F)
+                           activate.verndvs = F), silent = T)
       }
       names(out)[j] <- as.character(st)
 
