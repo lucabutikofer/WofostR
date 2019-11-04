@@ -419,12 +419,12 @@ dwn.crop<- function(cropName='potato', variety='Potato_701'){
   httr::stop_for_status(request)
   handle <- textConnection(httr::content(request, as = 'text'))
   on.exit(close(handle))
-  y<- yaml::read_yaml(handle)
+  y<- yaml::yaml.load_file(handle, merge.precedence = 'override')
 
 
   yv<- y[["CropParameters"]][["Varieties"]][[variety]]
 
-  yv0<- NULL
+  yv0<- list()
   for(i in 1:length(yv)){
     yv0[[i]]<- yv[[i]][[1]]
   }
@@ -459,13 +459,13 @@ dwn.crop<- function(cropName='potato', variety='Potato_701'){
 load.crop <- function(cropName='potato', variety='Potato_701',
                       crLocal){
 
-  y<- yaml::read_yaml(paste0(crLocal, cropName, '.yaml'))
-
+  y<- yaml::yaml.load_file(paste0(crLocal, cropName, '.yaml'),
+                           merge.precedence = 'override')
   # Select variety
   yv<- y[["CropParameters"]][["Varieties"]][[variety]]
 
   # Reorganise list structure
-  yv0<- NULL
+  yv0<- list()
   for(i in 1:length(yv)){
     yv0[[i]]<- yv[[i]][[1]]
   }

@@ -13,6 +13,11 @@
 #' on "https://github.com/ajwdewit/WOFOST_crop_parameters.git" will be run.
 #' @param crLocal Character vector. If crops are stored locally, this is
 #' the path where all crop yaml files are stored.
+#' @param activate.verndvs Logical. If FALSE (default), variable "verndvs"
+#' is deactivated so that there is a hard limit for crops that do not meet
+#' vernalisation requirements. If TRUE, crops are left to grow past a specific
+#' developmnent stage also if vernalisation requirements are not fullfilled.
+#' A warning is issued in this case.
 #' @export
 #'
 growingWindow <- function(crop = "potato", variety = "Potato_701",

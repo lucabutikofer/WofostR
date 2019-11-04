@@ -6,8 +6,8 @@
 #'
 #' @details This routine calculates the potential evapo(transpi)ration rates
 #' from a free water surface (E0), a bare soil surface (ES0), and a crop canopy
-#' (ET0) in mm/d. For these calculations the analysis by Penman is followed
-#' (Frere and Popov, 1979;Penman, 1948, 1956, and 1963).
+  #' (ET0) in mm/d. For these calculations the analysis by Penman is followed
+  #' (Frere and Popov, 1979;Penman, 1948, 1956, and 1963).
 #'
 #' @param w WeatherObject where E0, ES0 and ET0 are not computed yet.
 #' @return WeatherObject w with added E0, ES0 and ET0 slots.
