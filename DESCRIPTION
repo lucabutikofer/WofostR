@@ -14,9 +14,10 @@ License: EUPL (>= 1.1)
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.1.1
-Imports: yaml, methods, httr
+Imports: yaml(>= 2.2.0.9999), methods, httr
 Depends: R (>= 2.10)
 Suggests: 
     knitr,
     rmarkdown
 VignetteBuilder: knitr
+Remotes: viking/r-yaml
