@@ -7,10 +7,58 @@
 SoilObject(...)
 }
 \arguments{
-\item{...}{Named list where each named element corresponds to an omonimous
-slot in the SoilObject to be created. Alternatively slots can be filled
-individually (e.g. with "SoilObject(CVR = 2, SPA = 7)").}
+\item{...}{Slots can be filled by providing a named list where each named
+element corresponds to an omonimous slot in the SoilObject to be created.
+Alternatively slots can be filled}
 }
 \description{
-Contains soil parameters
+Object containing soil parameters.
+}
+\section{Slots}{
+
+\describe{
+\item{\code{SMFCF}}{Field capacity of the soil}
+
+\item{\code{SM0}}{Porosity of the soil}
+
+\item{\code{SMW}}{Wilting point of the soil}
+
+\item{\code{CRAIRC}}{Soil critical air content (waterlogging)}
+
+\item{\code{SOPE}}{maximum percolation rate root zone [cm/day]}
+
+\item{\code{KSUB}}{maximum percolation rate subsoil [cm/day]}
+
+\item{\code{K0}}{hydraulic conductivity of saturated soil [cm/day]}
+
+\item{\code{RDMSOL}}{Soil rootable depth [cm]}
+
+\item{\code{IFUNRN}}{Indicates whether non-infiltrating fraction of rain is a
+function of storm size (1) or not (0)}
+
+\item{\code{SSMAX}}{Maximum surface storage [cm]}
+
+\item{\code{SSI}}{Initial surface storage [cm]}
+
+\item{\code{WAV}}{Initial amount of water in total soil [cm] profile}
+
+\item{\code{NOTINF}}{Maximum fraction of rain not-infiltrating into the soil}
+
+\item{\code{SMLIM}}{Initial maximum moisture content in initial rooting
+depth zone.}
+}}
+
+\examples{
+s <- SoilObject(SMFCF = 2, K0 = 7)
+s
+str(s)
+
+s  <- SoilObject(
+        list(SMFCF = 0.318, SM0 = 0.415, SMW = 0.151, CRAIRC = 0.06)
+      )
+s
+str(s)
+
+randomSoil
+
 }

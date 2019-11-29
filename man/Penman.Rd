@@ -22,3 +22,12 @@ from a free water surface (E0), a bare soil surface (ES0), and a crop canopy
 (ET0) in mm/d. For these calculations the analysis by Penman is followed
 (Frere and Popov, 1979;Penman, 1948, 1956, and 1963).
 }
+\examples{
+
+w <- randomWeather
+w@E0 = NULL
+w@ES0 = NULL
+w@ET0 = NULL
+w <- Penman(w)
+w
+}

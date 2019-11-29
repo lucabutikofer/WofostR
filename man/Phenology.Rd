@@ -33,3 +33,11 @@ file, if this happens.}
 \description{
 Computes the phenological development of the crop
 }
+\examples{
+p <- Phenology (crop = dwn.crop(), w = randomWeather,)
+plot(randomWeather@DAY[1:length(p$dvs)], p$dvs, type = 'l', col = 4,
+     main = paste(dwn.crop()@VARNAME, 'development'),
+     xlab = '',
+     ylab = 'DVS')
+
+}

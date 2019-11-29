@@ -13,6 +13,14 @@
 #' @return WeatherObject w with added E0, ES0 and ET0 slots.
 #' @export
 #'
+#' @examples
+#'
+#' w <- randomWeather
+#' w@E0 = NULL
+#' w@ES0 = NULL
+#' w@ET0 = NULL
+#' w <- Penman(w)
+#' w
 Penman <- function(w){
 
 

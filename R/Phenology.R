@@ -23,6 +23,13 @@
 
 #' @export
 #'
+#' @examples
+#' p <- Phenology (crop = dwn.crop(), w = randomWeather,)
+#' plot(randomWeather@DAY[1:length(p$dvs)], p$dvs, type = 'l', col = 4,
+#'      main = paste(dwn.crop()@VARNAME, 'development'),
+#'      xlab = '',
+#'      ylab = 'DVS')
+#'
 Phenology<- function(
   crop, w,
   startType= 'sowing',

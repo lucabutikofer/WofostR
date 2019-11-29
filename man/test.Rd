@@ -27,9 +27,18 @@ since they have not been implemente in WofostR as independent components,
 but rather they have been hard-coded into other functions.
 Examples of these are 'partitioning', 'root dynamics', 'leaf dynamics',
 and others that do not exhist as independet R functions.
-
 "phenology" tests the stand-alone module
 Phenology() used by function growingWindow(). Phenological processes
 are hardcoded within in Wofost() and can only be tested through
 "potentialproduction" and "waterlimitedproduction".
+}
+\examples{
+# Test phenology
+test('phenology')
+
+# Test all components
+# Not run, time consuming
+# test()
+
+
 }

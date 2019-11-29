@@ -1,35 +1,34 @@
 # Potential production ####
 
-#' Wofost Potential Production
-#'
-#' Computes potential production as per Wofost crop growth algorithm
-#'
-#' @param crop CorpObject. Object of class CropObject containing the specific
-#' crop parameters. See ?CropObject.
-#' @param w WeatherObject. Object of class CropObject containing the climatic
-#' driving variables. See ?WeatherObject.
-#' @param startType Development stage at which the simulation is started.
-#' Either "sowing" or "emergence".
-#' @param finishType Variable describing the conditionst triggering
-#' the end of the simulation.
-#' Can be either "maturity" -The model is terminated at - or 7 days after -
-#' maturity is reached, or an integer [1:365] representing the maximum
-#' number of days for which the model is run.
-#' @param varReturn Character vector specifying which variables to output.
-#' Potentially, any of the variables produced inside the Wofost function
-#' can be returned. However the use of carReturn = NULL (default) is
-#' encouraged. By default returning variables described in "Returns".
-#' @param activate.verndvs Logical. If TRUE, allows the use of variable
-#' "VERNDVS". A critical development stage (VERNDVS) is used to stop the effect
-#' of vernalisation when this DVS is reached. This is done to improve model
-#' stability in order to avoid that Anthesis is never reached due to a
-#' somewhat too high VERNSAT. Nevertheless, a warning is written to the log
-#' file, if this happens.
-#' @param activate.stopInSeven Logical. If TRUE, the simulation stops seven
-#' days after maturity is reached. If FALSE, the simulation terminates when
-#' maturity is reached. Ignored if "finishType" is numeric.
-#' @export
-#'
+# Wofost Potential Production
+#
+# Computes potential production as per Wofost crop growth algorithm
+#
+# @param crop CorpObject. Object of class CropObject containing the specific
+# crop parameters. See ?CropObject.
+# @param w WeatherObject. Object of class CropObject containing the climatic
+# driving variables. See ?WeatherObject.
+# @param startType Development stage at which the simulation is started.
+# Either "sowing" or "emergence".
+# @param finishType Variable describing the conditionst triggering
+# the end of the simulation.
+# Can be either "maturity" -The model is terminated at - or 7 days after -
+# maturity is reached, or an integer [1:365] representing the maximum
+# number of days for which the model is run.
+# @param varReturn Character vector specifying which variables to output.
+# Potentially, any of the variables produced inside the Wofost function
+# can be returned. However the use of carReturn = NULL (default) is
+# encouraged. By default returning variables described in "Returns".
+# @param activate.verndvs Logical. If TRUE, allows the use of variable
+# "VERNDVS". A critical development stage (VERNDVS) is used to stop the effect
+# of vernalisation when this DVS is reached. This is done to improve model
+# stability in order to avoid that Anthesis is never reached due to a
+# somewhat too high VERNSAT. Nevertheless, a warning is written to the log
+# file, if this happens.
+# @param activate.stopInSeven Logical. If TRUE, the simulation stops seven
+# days after maturity is reached. If FALSE, the simulation terminates when
+# maturity is reached. Ignored if "finishType" is numeric.
+
 WofostPP<- function(
   crop, w,
   startType= 'sowing',

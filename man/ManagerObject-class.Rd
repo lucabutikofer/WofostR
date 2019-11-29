@@ -5,28 +5,48 @@
 \alias{ManagerObject-class}
 \alias{ManagerObject}
 \title{S4 Class "ManagerObject"}
-\arguments{
-\item{cropVarSequence:}{Character vector containing the names of the
+\description{
+Object containing managements instructions used to run a sequence of
+crops simulation in succession for the same location
+(e.g. a crop rotation or the same crop over multiple years).
+}
+\section{Slots}{
+
+\describe{
+\item{\code{cropVarSequence:}}{Character vector containing the names of the
 crop varieties in the desired succession. Must be in the format
 "cropName-varName". Type "cropVarList" for a list of crop and variety names.}
 
-\item{cropStartTypes:}{Character vector of same length as cropSequence
+\item{\code{cropStartTypes:}}{Character vector of same length as cropSequence
 containing the crop start type (i.e. "sowing" or "emergence")}
 
-\item{cromStartDate:}{Character vecotr of same length as croRotation
+\item{\code{cromStartDate:}}{Character vecotr of same length as croRotation
 containing start Dates for each crop. The first element is ignored and
 the first crop will start at "sequenceStart".}
 
-\item{cropFinish:}{Character vector of same length as cropRotation containing
+\item{\code{cropFinish:}}{Character vector of same length as cropRotation containing
 either a crop stage (e.g. "maturity") or a date in the format "YYYY/MM/DD".
 Where specified, date will take priority over corp stage and can be used to
 regulate long rotation series.}
 
-\item{spacing:}{Numeric vector of same lenaght as cropSequence.
+\item{\code{spacing:}}{Numeric vector of same lenaght as cropSequence.
 number of days after previous step when new crop is started.
 The first crop will be started spacing[1] days after sequenceStart.
 In most cases spacing[1] = 0.}
-}
-\description{
-Contains managements instructions
+}}
+
+\examples{
+ManagerObject(
+  cropSequence = c(
+    'barley-Spring_barley_301',
+    'millet-Millet_VanHeemst_1988',
+    'maize-Grain_maize_201'),
+  sequenceStart = '2010/04/16',
+  sequenceFinish = '2012/01/01',
+  cropStartType = c('sowing', 'sowing', 'sowing'),
+  cropStartDate = c(NA, '2011/04/16', NA),
+  cropFinish = c('maturity','2011/05/16','maturity'),
+  spacing = c(0, NA, 10 )
+)
+
 }

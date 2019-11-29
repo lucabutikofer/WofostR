@@ -1,26 +1,24 @@
 
-#' Astronomical computations routine
-#'
-#' Routine Astro calculates day length, some intermediate variables for the
-#' calculation of the solar elevation, the integral of the solar elevation
-#' over a day and the fraction of diffuse radiation.
-#'
-#' @param w Dataframe. Daily weather table
-#' @param t Integer. Time steps (days) passed from emergence (dvs==0)
-#' @param lat Numeric. Latitude
-#' @return Named list of length = 8:
-#' d:      DAYL      Astronomical daylength (base = 0 degrees)     h
-#' dlp:    DAYLP     Photosynthetic daylength (base =-4 degrees)   h
-#' sinld:  SINLD     Seasonal offset of sine of solar height       -
-#' cosld:  COSLD     Amplitude of sine of solar height             -
-#' dp:     DIFPP     Diffuse irradiation perpendicular to
-#'                   direction of light                         J/m2*s
-#' tatm:   ATMTR     Daily atmospheric transmission                -
-#' sinbm:  DSINBE    Daily total of effective solar height         s
-#' sod:    ANGOT     Angot radiation at top of atmosphere       J/m2*d
-#'
-#' @export
-#'
+# Astronomical computations routine
+#
+# Routine Astro calculates day length, some intermediate variables for the
+# calculation of the solar elevation, the integral of the solar elevation
+# over a day and the fraction of diffuse radiation.
+#
+# @param w Dataframe. Daily weather table
+# @param t Integer. Time steps (days) passed from emergence (dvs==0)
+# @param lat Numeric. Latitude
+# @return Named list of length = 8:
+# d:      DAYL      Astronomical daylength (base = 0 degrees)     h
+# dlp:    DAYLP     Photosynthetic daylength (base =-4 degrees)   h
+# sinld:  SINLD     Seasonal offset of sine of solar height       -
+# cosld:  COSLD     Amplitude of sine of solar height             -
+# dp:     DIFPP     Diffuse irradiation perpendicular to
+#                   direction of light                         J/m2*s
+# tatm:   ATMTR     Daily atmospheric transmission                -
+# sinbm:  DSINBE    Daily total of effective solar height         s
+# sod:    ANGOT     Angot radiation at top of atmosphere       J/m2*d
+
 Astro<- function(w, t, lat){
 
   # return:
@@ -273,31 +271,30 @@ assim<- function(amax,eff,lai,kdif,sinb,pardir,pardif){
 }
 
 
-#' Evapotranspiration routine
-#'
-#' Routine Evapotranspiration computes evapotranspiration rates from crop
-#' and soil input parameters
-#'
-#' @param dvs Numeric. Development stage
-#' @param w Weather table
-#' @param lai Numeric. Leaf Area Index LAI
-#' @param sm Numeric. Volumetric soil moisture content
-#' @param t Integar. Time step of the model
-#' @param DEPNR Crop group number
-#' @param SMFCF Soil moisture content at field capacity [cm3/cm3]
-#' @param IAIRDU Indicates presence (1) or absence (0) of airducts in the plant
-#' @param IOX Flag; controlling calculation of potential (0) or
-#'            water limited yield (1)
-#' @param CFET Correction parameter of potential evapotranspiration rate
-#' @param SMW Soil moisture content at wilting point
-#' @param CRAIRC Critical air content for root aeration
-#' @param KDIFTB Extinction coefficient for diffuse visible radiation as
-#'               function of DVS
-#' @param dsos Days since oxygen stress, computed in classic waterbalance,
-#'             accumulates the number of consecutive days of oxygen stress
-#' @param SM0 Soil porosity
-#' @export
-#'
+# Evapotranspiration routine
+#
+# Routine Evapotranspiration computes evapotranspiration rates from crop
+# and soil input parameters
+#
+# @param dvs Numeric. Development stage
+# @param w Weather table
+# @param lai Numeric. Leaf Area Index LAI
+# @param sm Numeric. Volumetric soil moisture content
+# @param t Integar. Time step of the model
+# @param DEPNR Crop group number
+# @param SMFCF Soil moisture content at field capacity [cm3/cm3]
+# @param IAIRDU Indicates presence (1) or absence (0) of airducts in the plant
+# @param IOX Flag; controlling calculation of potential (0) or
+#            water limited yield (1)
+# @param CFET Correction parameter of potential evapotranspiration rate
+# @param SMW Soil moisture content at wilting point
+# @param CRAIRC Critical air content for root aeration
+# @param KDIFTB Extinction coefficient for diffuse visible radiation as
+#               function of DVS
+# @param dsos Days since oxygen stress, computed in classic waterbalance,
+#             accumulates the number of consecutive days of oxygen stress
+# @param SM0 Soil porosity
+
 Evapotranspiration<- function(dvs,w,lai,sm,t,dsos,SM0,DEPNR,SMFCF,IAIRDU,IOX,
                               CFET,SMW,CRAIRC,KDIFTB){
 

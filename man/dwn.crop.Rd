@@ -20,3 +20,8 @@ CropObject
 Downloads crop parameter files from
 "https://github.com/ajwdewit/WOFOST_crop_parameters.git"
 }
+\examples{
+crop <- dwn.crop(cropName='potato', variety='Potato_701')
+crop
+
+}

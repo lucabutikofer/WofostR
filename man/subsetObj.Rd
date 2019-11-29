@@ -19,3 +19,8 @@ WeatherObject of the selected period
 \description{
 Returns a section of the WeatherObject based on dates
 }
+\examples{
+ws <- subsetObj(randomWeatherLong, as.Date(c('2011-01-01', '2011-12-31')))
+ws
+
+}

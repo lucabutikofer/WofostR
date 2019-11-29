@@ -5,7 +5,7 @@
 \alias{plot,SimulationObject-method}
 \title{S4 Method for generic "plot()", SimulationObject}
 \usage{
-\S4method{plot}{SimulationObject}(x, var = "twso")
+\S4method{plot}{SimulationObject}(x, var = NULL)
 }
 \arguments{
 \item{x}{SimulationObject S4 object}
@@ -14,4 +14,20 @@
 }
 \description{
 Plots an overview of the output of function Wofost
+}
+\examples{
+# Generate SimulationObjects
+w <- randomWeatherLong
+s <- randomSoil
+cr <- dwn.crop()
+wopp <- Wofost(w, cr)
+womn <- Wofost(w, cr, manager = exampleManager)
+
+# Plot SimulationObjects
+plot(wopp)
+plot(wopp, var = c('dvs', 'tagp'))
+
+plot(womn)
+plot(womn, var = 'tagp')
+
 }

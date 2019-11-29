@@ -1,15 +1,12 @@
 Package: WofostR
 Type: Package
 Title: R Implementation of Wofost Crop Growth Algorithm
-Version: 0.1.0
+Version: 0.1.1
 Author: Luca Butikofer
 Maintainer: Luca Butikofer <lucabutikofer@gmail.com>
-Description: Implements Wofost Crop Growth Algorithm for potential production
-             and its independent subroutines Astro, Assimilation,
-             CH2O conversion and partitioning, Roots, Leaf and Storage organs
-             dynamics. Water-limited production is implemented via hydrotools
-             package. Automatic sourcing of high-res weather data via
-             microclima package. Crop suitability functions provided too.
+Description: Implements Wofost Crop Growth Algorithm for potential and
+             water-limited production on free-draining soil together with
+             functions for the computation of crop-suitability.
 License: EUPL (>= 1.1)
 Encoding: UTF-8
 LazyData: true

@@ -7,10 +7,6 @@
 #'
 "cropVarList"
 
-#' Temporary weather file from Penryn for playing around.
-#'
-"penrynWeather"
-
 #' Example WeatherObject
 #'
 #' Example of object of WeatherObject class.

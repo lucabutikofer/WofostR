@@ -24,6 +24,7 @@ If TRUE, free draining water-limited production.}
 \item{outDir}{Directory path (to be created) where the output is saved.}
 }
 \description{
+Deprecated! This function has been superseeded by cropSuitWofost().
 Takes the output of winSelectCrops() and runs a Wofost() run for each
 sowing date for each selected crop.
 }

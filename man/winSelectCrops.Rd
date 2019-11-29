@@ -15,3 +15,14 @@ crop/varieties that reached maturity with their corresponding sowing
 dates. This is useful for running Wofost on those with function
 "winSelectWofost()".
 }
+\examples{
+# Single crop growing window analysis
+out <- growingWindow(w = randomWeatherLong,
+                     crop = "potato",
+                     variety = "Potato_701")
+
+# Select viable crops
+gwOut <- winSelectCrops(out)
+
+
+}

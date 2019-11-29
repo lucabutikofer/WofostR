@@ -10,7 +10,8 @@
 #' one extra year to allow for testing the sowing of december of second-to-last
 #' year.
 #' @param allVar Logical. If TRUE all crop-variety combinations available
-#' on "https://github.com/ajwdewit/WOFOST_crop_parameters.git" will be run.
+#' on "https://github.com/ajwdewit/WOFOST_crop_parameters.git" or on the
+#' local directory crLocal will be run.
 #' @param crLocal Character vector. If crops are stored locally, this is
 #' the path where all crop yaml files are stored.
 #' @param activate.verndvs Logical. If FALSE (default), variable "verndvs"
@@ -19,6 +20,17 @@
 #' developmnent stage also if vernalisation requirements are not fullfilled.
 #' A warning is issued in this case.
 #' @export
+#'
+#' @examples
+#' # Run single crop
+#' out <- growingWindow(w = randomWeatherLong,
+#'                      crop = "potato",
+#'                      variety = "Potato_701")
+#'
+#' # Run all available crops
+#' # Not run. Takes some minutes
+#' # out <- growingWindow(w = randomWeatherLong,
+#' #                      allVar = TRUE)
 #'
 growingWindow <- function(crop = "potato", variety = "Potato_701",
                           w, allVar = FALSE, crLocal = NULL,
@@ -35,8 +47,12 @@ growingWindow <- function(crop = "potato", variety = "Potato_701",
   if (isTRUE(allVar)){out <- growingWindowAll(w, crLocal, activate.verndvs)}
 
   # Run "growingWindowONE" if "allVar==FALSE"
-  if (isFALSE(allVar)){out <- growingWindowOne(crop, variety, w, crLocal,
-                                               activate.verndvs)}
+  if (isFALSE(allVar)){
+    out <- growingWindowOne(crop, variety, w, crLocal,
+                            activate.verndvs)
+    out <- list(out)
+    names(out) <- paste(crop, variety, sep = '/')
+  }
 
   return(out)
 

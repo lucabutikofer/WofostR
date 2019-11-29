@@ -112,12 +112,12 @@ plot.wofost.test <- function(output,control,weather,precision = FALSE,
 
 # EXPORTED, DOCUMENTED FUCTIONS ####
 
-#' Afgen vector to table
-#'
-#' Renders afgen tables expressed as "vectors" into a "matrix" format.
-#'
-#' @param tab Afgen table expressed as vector.
-#' @export
+# Afgen vector to table
+#
+# Renders afgen tables expressed as "vectors" into a "matrix" format.
+#
+# @param tab Afgen table expressed as vector.
+
 make.afgen<- function(tab){
 
   tab<- as.numeric(tab)
@@ -140,15 +140,14 @@ make.afgen<- function(tab){
 }
 
 
-#' Reads .yaml test file
-#'
-#' Reads .yaml test files published in De Wit et al. 2019,
-#' "25 years of the WOFOST cropping systems model", and returns R list.
-#' @param yamlFile Path to the .yaml file or list object returned by function
-#' yaml::read_yaml.
-#' @return List version of yaml file.
-#' @export
-#'
+# Reads .yaml test file
+#
+# Reads .yaml test files published in De Wit et al. 2019,
+# "25 years of the WOFOST cropping systems model", and returns R list.
+# @param yamlFile Path to the .yaml file or list object returned by function
+# yaml::read_yaml.
+# @return List version of yaml file.
+
 read.test.yaml<- function(yamlFile){
 
   # Read .yaml file with "yaml" package
@@ -216,16 +215,15 @@ read.test.yaml<- function(yamlFile){
 }
 
 
-#' Tests afgen() function
-#'
-#' Performs a graphical test to check that afgen() function performs
-#' correcly. Also useful to visualise the shape of the function represented
-#' by an afgen table.
-#'
-#' @importFrom graphics points
-#' @param at atrix. Afgen table
-#' @export
-#'
+# Tests afgen() function
+#
+# Performs a graphical test to check that afgen() function performs
+# correcly. Also useful to visualise the shape of the function represented
+# by an afgen table.
+#
+# @importFrom graphics points
+# @param at Matrix. Afgen table
+#
 test.afgen<- function(at){
 
   rg<- diff(range(at[,'x']))
@@ -258,13 +256,21 @@ test.afgen<- function(at){
 #' but rather they have been hard-coded into other functions.
 #' Examples of these are 'partitioning', 'root dynamics', 'leaf dynamics',
 #' and others that do not exhist as independet R functions.
-#'
 #' "phenology" tests the stand-alone module
 #' Phenology() used by function growingWindow(). Phenological processes
 #' are hardcoded within in Wofost() and can only be tested through
 #' "potentialproduction" and "waterlimitedproduction".
-
+#'
 #' @export
+#'
+#' @examples
+#' # Test phenology
+#' test('phenology')
+#'
+#' # Test all components
+#' # Not run, time consuming
+#' # test()
+#'
 #'
 test<- function(component= "All", complete= FALSE){
 
@@ -409,6 +415,10 @@ test<- function(component= "All", complete= FALSE){
 #' @return CropObject
 #' @export
 #'
+#' @examples
+#' crop <- dwn.crop(cropName='potato', variety='Potato_701')
+#' crop
+#'
 dwn.crop<- function(cropName='potato', variety='Potato_701'){
 
   request <- httr::GET(paste0(
@@ -497,6 +507,10 @@ load.crop <- function(cropName='potato', variety='Potato_701',
 #' @return WeatherObject of the selected period
 #' @export
 #'
+#' @examples
+#' ws <- subsetObj(randomWeatherLong, as.Date(c('2011-01-01', '2011-12-31')))
+#' ws
+#'
 subsetObj <- function(obj, interval){
 
   # Convert dates into indices
@@ -535,6 +549,13 @@ subsetObj <- function(obj, interval){
 
 }
 
+#' Combine weather object
+#'
+#' Returns a stiched WeatherObject from a list of consecutive WeatherObjects.
+#' @param obj List of weatherObjects
+#'
+#' @export
+#'
 combineObj <- function(obj){
 
   # obj: List of WeatherObjects
@@ -564,7 +585,6 @@ combineObj <- function(obj){
   }
 
   return(tempObj)
-
 }
 
 manager.check <- function(managerObject){
@@ -587,33 +607,6 @@ manager.check <- function(managerObject){
 }
 
 
-#' Plots the output of Wofost()
-#'
-#' Plots each output variable of function Wofost() in a single image
-#' @param out output of Wofost().
-#' @return Single plot
-#' @export
-#'
-plotWofost <- function(out){
-
-  # set new par() values.
-  l <- length(out)
-  if (round(sqrt(l)) == sqrt(l)){ # if l is a square number
-    op <- par(mfrow = c(sqrt(l), sqrt(l)))
-    on.exit(par(op, no.readonly = T))
-  } else {
-    op <- par(mfrow = c(round(sqrt(l)), round(sqrt(l)) + 1))
-    on.exit(par(op,no.readonly = T))
-  }
-
-  # print all variables in "out"
-  for (i in 1:l){
-    plot(out[[i]], type='l', col = 4, lwd = 2,
-         xlab = 'Days from sowing',
-         ylab = names(out)[i],
-         main = names(out)[i])
-  }
-}
 
 
 

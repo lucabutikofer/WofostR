@@ -16,5 +16,21 @@ crop.}
 Contains the output of function Wofost()
 }
 \examples{
+# Generate SimulationObjects
+w <- randomWeatherLong
+s <- randomSoil
+cr <- dwn.crop()
+wopp <- Wofost(w, cr)
+womn <- Wofost(w, cr, manager = exampleManager)
+
+wopp
+womn
+
+# Plot SimulationObjects
+plot(wopp)
+plot(wopp, var = c('dvs', 'tagp'))
+
+plot(womn)
+plot(womn, var = 'tagp')
 
 }

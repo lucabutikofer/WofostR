@@ -197,8 +197,8 @@ Wofost<- function(
                            varReturn = varReturn,
                            startType = startType,
                            finishType = finishType,
-                           activate.verndvs= TRUE,
-                           activate.stopInSeven= FALSE)
+                           activate.verndvs = activate.verndvs,
+                           activate.stopInSeven = activate.stopInSeven)
 
     } else if (isTRUE(waterLimited)){  # water-limited production
 
@@ -206,8 +206,8 @@ Wofost<- function(
                            varReturn = varReturn,
                            startType = startType,
                            finishType = finishType,
-                           activate.verndvs= TRUE,
-                           activate.stopInSeven= FALSE)
+                           activate.verndvs = activate.verndvs,
+                           activate.stopInSeven = activate.stopInSeven)
     }
     OUT <- list(OUT)
     names(OUT) <- paste0(crop@CROPNAME, '_', as.character(w@DAY[1]))
