@@ -1,22 +1,3 @@
----
-title: "WofostR_Tutorial"
-subtitle: "R implementation of Wofost crop simulation model"
-author: "Luca Bütikofer"
-date: "29.01.2021"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{WofostR Tutorial}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
----
-
-```{r setup, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
-```
-
 # WofostR
 ### R implementation of Wofost crop simulation model
 
