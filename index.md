@@ -1,6 +1,3 @@
-# WofostR
-### R implementation of Wofost crop simulation model
-
 ***
 See [De Wit et al. (2019)][1] for details.
 
