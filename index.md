@@ -10,11 +10,11 @@ Python version available at [ajdewit/pcse][2] as part of the Python Crop Simulat
 ### Installation
 Install with:
 
-```
+`
 devtools::install_github('lucabutikofer/WofostR',
                          build_opts = c("--no-resave-data", "--no-manual"),
                          build_vignettes = T)
-```
+`
 
 ***
 ### Testing
@@ -23,14 +23,12 @@ After installation is complete you can test the program with `test()`.This comma
 By default only three test sets are randomly chosen to perform tests on. This is done to speed up the process. To perform tests on all available sets call `test(complete = TRUE)`.
 
 
-```
+`
 library(WofostR)
-```
 
-```
 test(component = 'phenology', complete = TRUE)
 test()
-```
+`
 
 ***
 ### Input files
