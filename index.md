@@ -2,7 +2,7 @@
 title: "WofostR_Tutorial"
 subtitle: "R implementation of Wofost crop simulation model"
 author: "Luca Bütikofer"
-date: "`r Sys.Date()`"
+date: "29.01.2021"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{WofostR Tutorial}
