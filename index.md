@@ -23,11 +23,11 @@ After installation is complete you can test the program with `test()`.This comma
 By default only three test sets are randomly chosen to perform tests on. This is done to speed up the process. To perform tests on all available sets call `test(complete = TRUE)`.
 
 
-```{r, echo = FALSE}
+```
 library(WofostR)
 ```
 
-```{r, eval = FALSE}
+```
 test(component = 'phenology', complete = TRUE)
 test()
 ```
@@ -46,7 +46,7 @@ These are S4 classes containing the variables required by function `Wofost()`. C
 `load.crop()` works in a similar way as `dwn.crop()` but reads .yaml files saved in the local directory `crLocal`.
 
 
-```{r}
+```
 cr <- dwn.crop(cropName = "sugarbeet",
                         variety = "Sugarbeet_601")
 cr
@@ -55,7 +55,7 @@ str(cr, list.len = 3)
 
 Weather objects must contain minimum and maximum temperature, radiation and latitude at daily time-steps starting from the day the model expected to start. An example weather object can be seen with `randomWeather`. WeatherObjects can be printed with the `plot()` function.
 
-```{r, fig.height = 4, fig.width = 7}
+```
 randomWeather
 str(randomWeather, list.len = 3)
 plot(randomWeather, var = c('RAIN','TMIN'))
@@ -63,14 +63,14 @@ plot(randomWeather, var = c('RAIN','TMIN'))
 
 SoilObjects are used to compute water-limited production (`Wofost(... , waterLimited = T)`) and contain soil variables for a single location. An example weather object can be seen with `randomSoil`.
 
-```{r}
+```
 randomSoil
 str(randomSoil)
 ```
 
 ManagerObjects are used to run a sequence of crops simulation in succession for the same location (e.g. a crop rotation or the same crop over multiple years). An example ManagerObject can be seen with `exampleManager`.
 
-```{r}
+```
 mo <- ManagerObject(
         cropSequence = c(
           'barley-Spring_barley_301',
@@ -91,7 +91,7 @@ mo
 
 Wofost crop simulation model is run by functions `Wofost()`. Potential Production and Free Draining water-limited production are called by setting variable `waterLimited` to `FALSE` or `TRUE` respectively.
 
-```{r, fig.show = 'hold', fig.height = 6, fig.width = 7}
+```
 # Run Potential Production
 outPP <- Wofost(crop = dwn.crop(), w = randomWeather)
 
@@ -101,7 +101,7 @@ outFD <- Wofost(crop = dwn.crop(), w = randomWeather, soil = randomSoil,
 plot(outFD)
 ```
 
-```{r, fig.show = 'hold', fig.height = 4, fig.width = 7}
+```
 # Run crop rotation with ManagerObject
 outMN <- Wofost(w = randomWeatherLong, manager = exampleManager)
 plot(outMN, var = 'tagp')
@@ -111,7 +111,7 @@ plot(outMN, var = 'tagp')
 ***
 ### Available Crops and Varieties {#link1}
 
-```{r, echo=FALSE}
+```
 knitr::kable(cropVarList)
 ```
 
