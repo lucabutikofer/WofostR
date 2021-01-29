@@ -10,7 +10,7 @@ Python version available at [ajdewit/pcse][2] as part of the Python Crop Simulat
 ### Installation
 Install with:
 
-```{r, eval = FALSE}
+```
 devtools::install_github('lucabutikofer/WofostR',
                          build_opts = c("--no-resave-data", "--no-manual"),
                          build_vignettes = T)
