@@ -22,4 +22,4 @@ Variable `build_opts = c("--no-resave-data", "--no-manual"), build_vignettes = T
 ***
 ### Documentation
 
-A tutorial is available as vingette. To access the vignette type `browseVignettes('WofostR')`
+A tutorial is available [HERE](https://lucabutikofer.github.io/WofostR) or as R vingette (accessible with R command `browseVignettes('WofostR')`).
